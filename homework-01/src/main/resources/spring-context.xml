@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="student" class="ru.otus.spring.domain.Student">
+    </bean>
+    <bean id="studentService" class="ru.otus.spring.service.impl.StudentServiceImpl">
+        <constructor-arg ref="student"/>
+    </bean>
+    <bean id="questionsService" class="ru.otus.spring.service.impl.QuestionsServiceImpl">
+        <constructor-arg name="dataPath" value="data.csv"/>
+    </bean>
+    <bean id="exam" class="ru.otus.spring.service.impl.ExamServiceImpl">
+        <constructor-arg index="0" ref="studentService"/>
+        <constructor-arg index="1" ref="questionsService"/>
+    </bean>
+
+</beans>
