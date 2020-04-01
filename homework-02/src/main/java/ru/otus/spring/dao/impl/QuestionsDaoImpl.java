@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.dao.QuestionsDao;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.service.ExamException;
+import ru.otus.spring.service.LocaleProps;
 import ru.otus.spring.service.LocalizationService;
 
 import java.io.FileNotFoundException;
@@ -21,23 +22,26 @@ import java.util.List;
 public class QuestionsDaoImpl implements QuestionsDao {
     private List<Question> questions = new ArrayList<Question>();
     private LocalizationService localizationService;
+    private LocaleProps localeProps;
+    private Resource dataResource;
 
-    public QuestionsDaoImpl(LocalizationService localizationService) {
+    public QuestionsDaoImpl(LocalizationService localizationService, LocaleProps localeProps) {
         this.localizationService = localizationService;
+        this.localeProps = localeProps;
+        this.dataResource = new ClassPathResource(localeProps.getDataPath());
 
-        Resource dataPath = new ClassPathResource(localizationService.getValue("dataPath"));
         Reader in = null;
         Iterable<CSVRecord> records = null;
 
         try {
-            in = new FileReader(dataPath.getFile());
+            in = new FileReader(dataResource.getFile());
             records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
             for (CSVRecord record : records) {
                 this.questions = this.addQuestion(this.questions, record.get("id"), record.get("question"), record.get("answer"));
             }
 
         } catch (FileNotFoundException e) {
-            throw new ExamException(localizationService.getValue("error.fileNotFound") + dataPath);
+            throw new ExamException(localizationService.getValue("error.fileNotFound") + localeProps.getDataPath());
         } catch (IOException e) {
             throw new ExamException(localizationService.getValue("error.unexpectedError"));
         }

@@ -3,14 +3,17 @@ package ru.otus.spring.dao.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import ru.otus.spring.dao.QuestionsDao;
 import ru.otus.spring.domain.Question;
+import ru.otus.spring.service.LocaleProps;
 import ru.otus.spring.service.LocalizationService;
 import ru.otus.spring.service.impl.LocalizationServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,15 +29,23 @@ class QuestionsDaoImplTest {
     private LocalizationService localizationService;
     private QuestionsDao questionsDao;
 
+    private LocaleProps localeProps;
+
     @BeforeEach
     public void setUp() {
-
         ReloadableResourceBundleMessageSource ms
                 = new ReloadableResourceBundleMessageSource();
         ms.setBasename("bundle");
         ms.setDefaultEncoding("UTF-8");
-        localizationService = new LocalizationServiceImpl(ms);
-        questionsDao = new QuestionsDaoImpl(localizationService);
+
+        localeProps = Mockito.mock(LocaleProps.class);
+        Mockito.when(localeProps.getDataPath()).thenReturn("test.csv");
+        Mockito.when(localeProps.getCurrentLocale()).thenReturn(Locale.forLanguageTag("ru_RU"));
+        Mockito.when(localeProps.getQuestionsCount()).thenReturn(5);
+        Mockito.when(localeProps.getMessageSource()).thenReturn(ms);
+
+        localizationService = new LocalizationServiceImpl(localeProps);
+        questionsDao = new QuestionsDaoImpl(localizationService, localeProps);
     }
 
     @DisplayName("addQuestion. В список корректно добавлена запись")
