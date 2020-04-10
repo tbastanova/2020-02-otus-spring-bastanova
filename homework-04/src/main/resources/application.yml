@@ -1,0 +1,11 @@
+locale:
+  localeLanguage: ru-RU
+  dataPath: ru/data.csv
+
+data:
+  questionsCount: 5
+
+spring:
+  messages:
+    basename: bundle
+
