@@ -54,7 +54,7 @@ class ApplicationShellCommandsTest {
     @BeforeEach
     void setUp() {
         Mockito.when(localeProps.getDataPath()).thenReturn("ru/test.csv");
-        Mockito.when(localeProps.getCurrentLocale()).thenReturn(Locale.forLanguageTag("ru_RU"));
+        Mockito.when(localeProps.getCurrentLocale()).thenReturn(Locale.forLanguageTag("ru-RU"));
 
         Student student = new Student();
         student.setLastName(STUDENT_LASTNAME);
