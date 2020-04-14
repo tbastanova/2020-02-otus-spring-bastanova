@@ -11,6 +11,7 @@ import ru.otus.homework05.dao.BookDao;
 import ru.otus.homework05.dao.CategoryDao;
 import ru.otus.homework05.dao.mapper.AuthorMapper;
 import ru.otus.homework05.dao.mapper.BookMapper;
+import ru.otus.homework05.dao.mapper.BookResultSetExtractor;
 import ru.otus.homework05.dao.mapper.CategoryMapper;
 import ru.otus.homework05.domain.Author;
 import ru.otus.homework05.domain.Book;
@@ -41,7 +42,7 @@ public class BookDaoJdbc implements BookDao {
         try {
             Map<String, Object> params = Collections.singletonMap("id", id);
             return jdbcTemplate.queryForObject(
-                    "select * from book where id = :id", params, new BookMapper()
+                    "select b.id, b.name, a.id as author_id, a.name as author_name, c.id as category_id, c.name as category_name from book b left outer join book_author ba on b.id=ba.book_id left outer join author a on a.id=ba.author_id left outer join book_category bc on b.id=bc.book_id left outer join category c on c.id=bc.category_id where b.id= :id", params, new BookMapper()
             );
         } catch (
                 EmptyResultDataAccessException e) {
@@ -74,7 +75,8 @@ public class BookDaoJdbc implements BookDao {
 
     public List<Book> getAll() {
         try {
-            return jdbcTemplate.query("select * from book", new BookMapper());
+            List<Book> books = (List<Book>) jdbcTemplate.query("select b.id, b.name, a.id as author_id, a.name as author_name, c.id as category_id, c.name as category_name from book b left outer join book_author ba on b.id=ba.book_id left outer join author a on a.id=ba.author_id left outer join book_category bc on b.id=bc.book_id left outer join category c on c.id=bc.category_id", new BookResultSetExtractor());
+            return books;
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

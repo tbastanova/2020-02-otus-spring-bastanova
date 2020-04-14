@@ -4,3 +4,6 @@ spring:
     initialization-mode: always
     schema: schema.sql
     data: data.sql
+  shell:
+    interactive:
+      enabled: true

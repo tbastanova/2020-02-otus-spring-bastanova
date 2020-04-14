@@ -45,9 +45,11 @@ class BookDaoJdbcTest {
     private static final String DUMMY_BOOK = "Dummy Book";
     private static final String CHANGED_BOOK = "Changed Book";
     private static final long TEST_AUTHOR_ID_1 = 1;
+    private static final String TEST_AUTHOR_1 = "Test Author1";
     private static final String CURRENT_AUTHOR = "Current Author";
     private static final String CURRENT_AUTHOR_2 = "Current Author2";
     private static final long TEST_CATEGORY_ID_1 = 1;
+    private static final String TEST_CATEGORY_1 = "Test Category1";
     private static final String CURRENT_CATEGORY = "Current Category";
     private static final String CURRENT_CATEGORY_2 = "Current Category2";
 
@@ -96,8 +98,18 @@ class BookDaoJdbcTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void getAll() {
+        List<Author> authors = new ArrayList<>();
+        authors.add(new Author(TEST_AUTHOR_ID_1, TEST_AUTHOR_1));
+
+        List<Category> categories = new ArrayList<>();
+        categories.add(new Category(TEST_CATEGORY_ID_1, TEST_CATEGORY_1));
+
+        Book book = new Book(TEST_ID_1, TEST_BOOK_1);
+        book.setAuthors(authors);
+        book.setCategories(categories);
+
         List<Book> bookList = new ArrayList<>();
-        bookList.add(new Book(TEST_ID_1, TEST_BOOK_1));
+        bookList.add(book);
         bookList.add(new Book(TEST_ID_2, TEST_BOOK_2));
 
         assertEquals(bookList, bookDao.getAll());

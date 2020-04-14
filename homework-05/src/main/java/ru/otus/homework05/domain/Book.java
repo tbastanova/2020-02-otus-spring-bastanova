@@ -1,15 +1,26 @@
 package ru.otus.homework05.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Book {
 
     private final long id;
     private final String name;
+    private List<Author> authors;
+    private List<Category> categories;
 
     public Book(long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public long getId() {
@@ -18,6 +29,14 @@ public class Book {
 
     public String getName() {
         return name;
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
     }
 
     @Override

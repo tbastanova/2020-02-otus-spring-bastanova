@@ -12,22 +12,21 @@ import ru.otus.homework05.domain.Category;
 import ru.otus.homework05.exception.NoAuthorFoundException;
 import ru.otus.homework05.exception.NoBookFoundException;
 import ru.otus.homework05.exception.NoCategoryFoundException;
+import ru.otus.homework05.service.BookService;
 
 @ShellComponent
 public class BookShellCommands {
     private final BookDao bookDao;
-    private final AuthorDao authorDao;
-    private final CategoryDao categoryDao;
+    private final BookService bookService;
 
     private static final long DUMMY_ID = -1;
     private static final String NO_BOOK_FOUND_EXCEPTION_TEXT = "Книга с id = %d не найдена";
     private static final String NO_AUTHOR_FOUND_EXCEPTION_TEXT = "Автор с id = %d не найден";
     private static final String NO_CATEGORY_FOUND_EXCEPTION_TEXT = "Категория с id = %d не найдена";
 
-    public BookShellCommands(BookDao bookDao, AuthorDao authorDao, CategoryDao categoryDao) {
+    public BookShellCommands(BookDao bookDao, AuthorDao authorDao, CategoryDao categoryDao, BookService bookService) {
         this.bookDao = bookDao;
-        this.authorDao = authorDao;
-        this.categoryDao = categoryDao;
+        this.bookService = bookService;
     }
 
     @ShellMethod(value = "Insert book", key = {"insertbook", "ib"})
@@ -39,14 +38,14 @@ public class BookShellCommands {
     @ShellMethod(value = "Get book by id", key = {"getbook", "gb"})
     public String getBookById(@ShellOption long bookId) {
         Book book = bookDao.getById(bookId);
-        return String.format("Книга: id = %d, name = %s", book.getId(), book.getName());
+        return bookService.getBookToString(bookId);
     }
 
     @ShellMethod(value = "Update book", key = {"updatebook", "ub"})
     public String updateBook(@ShellOption long bookId, String bookName) {
         bookDao.update(new Book(bookId, bookName));
         try {
-            return String.format("Книга: id = %d, name = %s", bookId, bookName);
+            return bookService.getBookToString(bookId);
         } catch (NoBookFoundException e) {
             return String.format(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
         }
@@ -63,19 +62,11 @@ public class BookShellCommands {
         return String.format("Общее количество книг: %d", bookDao.count());
     }
 
-    @ShellMethod(value = "Get all books", key = {"getallbook", "gab"})
+    @ShellMethod(value = "Get all books", key = {"getallbook", "gab", "getall", "all"})
     public void getAllBook() {
         for (Book book :
                 bookDao.getAll()) {
-            System.out.println(getBookToString(book.getId()));
-        }
-    }
-
-    @ShellMethod(value = "Get all about books", key = {"getall", "all"})
-    public void getAll() {
-        for (Book book :
-                bookDao.getAll()) {
-            System.out.println(getBookToString(book.getId()) + " | " + getBookAutorToString(book.getId()) + " | " + getBookCategoryToString(book.getId()));
+            System.out.println(bookService.getBookToString(book.getId()));
         }
     }
 
@@ -84,7 +75,7 @@ public class BookShellCommands {
         try {
             bookDao.setBookAuthor(bookId, authorId);
             System.out.println("В книгу добавлен автор:");
-            System.out.println(getBookToString(bookId) + " | " + getBookAutorToString(bookId));
+            System.out.println(bookService.getBookToString(bookId));
         } catch (NoBookFoundException e) {
             System.out.printf(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
             System.out.println();
@@ -109,7 +100,7 @@ public class BookShellCommands {
         try {
             bookDao.setBookCategory(bookId, categoryId);
             System.out.println("В книгу добавлена категория:");
-            System.out.println(getBookToString(bookId) + " | " + getBookCategoryToString(bookId));
+            System.out.println(bookService.getBookToString(bookId));
         } catch (NoBookFoundException e) {
             System.out.printf(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
             System.out.println();
@@ -127,28 +118,5 @@ public class BookShellCommands {
                 bookDao.getBookCategory(bookId)) {
             System.out.println(category.getId() + " | " + category.getName());
         }
-    }
-
-    private String getBookToString(long bookId) {
-        Book book = bookDao.getById(bookId);
-        return String.format("%d | %s", book.getId(), book.getName());
-    }
-
-    private String getBookAutorToString(long bookId) {
-        String authors = new String();
-        for (Author author :
-                bookDao.getBookAuthor(bookId)) {
-            authors = authors + author.getName() + "; ";
-        }
-        return authors;
-    }
-
-    private String getBookCategoryToString(long bookId) {
-        String categories = new String();
-        for (Category category :
-                bookDao.getBookCategory(bookId)) {
-            categories = categories + category.getName() + "; ";
-        }
-        return categories;
     }
 }
