@@ -19,11 +19,11 @@ public interface BookDao {
 
     List<Book> getAll();
 
-    int setBookAuthor(long bookId, long authorId);
+    int addBookAuthor(long bookId, long authorId);
 
     List<Author> getBookAuthor(long bookId);
 
-    int setBookCategory(long bookId, long categoryId);
+    int addBookCategory(long bookId, long categoryId);
 
     List<Category> getBookCategory(long bookId);
 }

@@ -68,4 +68,8 @@ public class AuthorDaoJdbc implements AuthorDao {
                 "delete from author where id = :id", params
         );
     }
+
+    public List<Author> findAllUsed() {
+        return jdbcTemplate.query("select a.id, a.name from author a inner join book_author ba on a.id = ba.author_id group by a.id, a.name order by a.name", new AuthorMapper());
+    }
 }

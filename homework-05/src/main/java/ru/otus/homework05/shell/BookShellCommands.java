@@ -38,14 +38,14 @@ public class BookShellCommands {
     @ShellMethod(value = "Get book by id", key = {"getbook", "gb"})
     public String getBookById(@ShellOption long bookId) {
         Book book = bookDao.getById(bookId);
-        return bookService.getBookToString(bookId);
+        return bookService.getBookToString(book);
     }
 
     @ShellMethod(value = "Update book", key = {"updatebook", "ub"})
     public String updateBook(@ShellOption long bookId, String bookName) {
         bookDao.update(new Book(bookId, bookName));
         try {
-            return bookService.getBookToString(bookId);
+            return bookService.getBookToString(bookDao.getById(bookId));
         } catch (NoBookFoundException e) {
             return String.format(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
         }
@@ -66,16 +66,16 @@ public class BookShellCommands {
     public void getAllBook() {
         for (Book book :
                 bookDao.getAll()) {
-            System.out.println(bookService.getBookToString(book.getId()));
+            System.out.println(bookService.getBookToString(book));
         }
     }
 
     @ShellMethod(value = "Set book author", key = {"setbookauthor", "sba"})
     public void setBookAuthor(@ShellOption long bookId, long authorId) {
         try {
-            bookDao.setBookAuthor(bookId, authorId);
+            bookDao.addBookAuthor(bookId, authorId);
             System.out.println("В книгу добавлен автор:");
-            System.out.println(bookService.getBookToString(bookId));
+            System.out.println(bookService.getBookToString(bookDao.getById(bookId)));
         } catch (NoBookFoundException e) {
             System.out.printf(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
             System.out.println();
@@ -98,9 +98,9 @@ public class BookShellCommands {
     @ShellMethod(value = "Set book category", key = {"setbookcategory", "sbc"})
     public void setBookCategory(@ShellOption long bookId, long categoryId) {
         try {
-            bookDao.setBookCategory(bookId, categoryId);
+            bookDao.addBookCategory(bookId, categoryId);
             System.out.println("В книгу добавлена категория:");
-            System.out.println(bookService.getBookToString(bookId));
+            System.out.println(bookService.getBookToString(bookDao.getById(bookId)));
         } catch (NoBookFoundException e) {
             System.out.printf(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
             System.out.println();

@@ -1,5 +1,7 @@
 package ru.otus.homework05.service;
 
+import ru.otus.homework05.domain.Book;
+
 public interface BookService {
-    public String getBookToString(long bookId);
+    String getBookToString(Book book);
 }

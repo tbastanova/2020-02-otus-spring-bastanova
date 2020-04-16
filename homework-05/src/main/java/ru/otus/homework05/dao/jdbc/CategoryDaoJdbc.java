@@ -68,4 +68,8 @@ public class CategoryDaoJdbc implements CategoryDao {
                 "delete from category where id = :id", params
         );
     }
+
+    public List<Category> findAllUsed() {
+        return jdbcTemplate.query("select a.id, a.name from category a inner join book_category ba on a.id = ba.category_id group by a.id, a.name order by a.name", new CategoryMapper());
+    }
 }

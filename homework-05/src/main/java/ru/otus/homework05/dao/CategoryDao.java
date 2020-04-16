@@ -16,4 +16,6 @@ public interface CategoryDao {
     long count();
 
     List<Category> getAll();
+
+    List<Category> findAllUsed();
 }

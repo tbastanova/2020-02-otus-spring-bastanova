@@ -138,13 +138,13 @@ class BookDaoJdbcTest {
     @DisplayName("setBookAuthor не нашел книгу")
     @Test
     void setBookAuthorNoBookFound() {
-        assertThrows(NoBookFoundException.class, () -> bookDao.setBookAuthor(DUMMY_ID, TEST_AUTHOR_ID_1));
+        assertThrows(NoBookFoundException.class, () -> bookDao.addBookAuthor(DUMMY_ID, TEST_AUTHOR_ID_1));
     }
 
     @DisplayName("setBookAuthor не нашел автора")
     @Test
     void setBookAuthorNoAuthorFound() {
-        assertThrows(NoAuthorFoundException.class, () -> bookDao.setBookAuthor(TEST_ID_1, DUMMY_ID));
+        assertThrows(NoAuthorFoundException.class, () -> bookDao.addBookAuthor(TEST_ID_1, DUMMY_ID));
     }
 
     @DisplayName("setBookAuthor добавил автора")
@@ -152,7 +152,7 @@ class BookDaoJdbcTest {
     void setBookAuthorAddNewAuthor() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long authorId = authorDao.insert(new Author(DUMMY_ID, CURRENT_AUTHOR));
-        int res = bookDao.setBookAuthor(bookId, authorId);
+        int res = bookDao.addBookAuthor(bookId, authorId);
         List<Author> authorList = bookDao.getBookAuthor(bookId);
         assertTrue(1 == res && authorList.contains(new Author(authorId, CURRENT_AUTHOR)));
     }
@@ -162,8 +162,8 @@ class BookDaoJdbcTest {
     void setBookAuthorAuthorExists() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long authorId = authorDao.insert(new Author(DUMMY_ID, CURRENT_AUTHOR));
-        bookDao.setBookAuthor(bookId, authorId);
-        bookDao.setBookAuthor(bookId, authorId);
+        bookDao.addBookAuthor(bookId, authorId);
+        bookDao.addBookAuthor(bookId, authorId);
         assertEquals(1, bookDao.getBookAuthor(bookId).size());
     }
 
@@ -172,9 +172,9 @@ class BookDaoJdbcTest {
     void setBookAuthorAddSecondAuthor() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long authorId = authorDao.insert(new Author(DUMMY_ID, CURRENT_AUTHOR));
-        bookDao.setBookAuthor(bookId, authorId);
+        bookDao.addBookAuthor(bookId, authorId);
         authorId = authorDao.insert(new Author(DUMMY_ID, CURRENT_AUTHOR));
-        bookDao.setBookAuthor(bookId, authorId);
+        bookDao.addBookAuthor(bookId, authorId);
         assertEquals(2, bookDao.getBookAuthor(bookId).size());
     }
 
@@ -183,7 +183,7 @@ class BookDaoJdbcTest {
     void getBookAuthor() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long authorId = authorDao.insert(new Author(DUMMY_ID, CURRENT_AUTHOR));
-        bookDao.setBookAuthor(bookId, authorId);
+        bookDao.addBookAuthor(bookId, authorId);
         List<Author> authorList = bookDao.getBookAuthor(bookId);
         assertTrue(authorList.size() == 1 && authorList.contains(new Author(authorId, CURRENT_AUTHOR)));
     }
@@ -194,8 +194,8 @@ class BookDaoJdbcTest {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long authorId = authorDao.insert(new Author(DUMMY_ID, CURRENT_AUTHOR));
         long authorId2 = authorDao.insert(new Author(DUMMY_ID, CURRENT_AUTHOR_2));
-        bookDao.setBookAuthor(bookId, authorId);
-        bookDao.setBookAuthor(bookId, authorId2);
+        bookDao.addBookAuthor(bookId, authorId);
+        bookDao.addBookAuthor(bookId, authorId2);
         List<Author> authorList = bookDao.getBookAuthor(bookId);
         assertTrue(authorList.size() == 2 && authorList.contains(new Author(authorId, CURRENT_AUTHOR)) && authorList.contains(new Author(authorId2, CURRENT_AUTHOR_2)));
     }
@@ -210,13 +210,13 @@ class BookDaoJdbcTest {
     @DisplayName("setBookCategory не нашел книгу")
     @Test
     void setBookCategoryNoBookFound() {
-        assertThrows(NoBookFoundException.class, () -> bookDao.setBookCategory(DUMMY_ID, TEST_CATEGORY_ID_1));
+        assertThrows(NoBookFoundException.class, () -> bookDao.addBookCategory(DUMMY_ID, TEST_CATEGORY_ID_1));
     }
 
     @DisplayName("setBookCategory не нашел категорию")
     @Test
     void setBookCategoryNoCategoryFound() {
-        assertThrows(NoCategoryFoundException.class, () -> bookDao.setBookCategory(TEST_ID_1, DUMMY_ID));
+        assertThrows(NoCategoryFoundException.class, () -> bookDao.addBookCategory(TEST_ID_1, DUMMY_ID));
     }
 
     @DisplayName("setBookCategory добавил категорию")
@@ -224,7 +224,7 @@ class BookDaoJdbcTest {
     void setBookCategoryAddNewCategory() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long categoryId = categoryDao.insert(new Category(DUMMY_ID, CURRENT_CATEGORY));
-        int res = bookDao.setBookCategory(bookId, categoryId);
+        int res = bookDao.addBookCategory(bookId, categoryId);
         List<Category> categoryList = bookDao.getBookCategory(bookId);
         assertTrue(1 == res && categoryList.contains(new Category(categoryId, CURRENT_CATEGORY)));
     }
@@ -234,8 +234,8 @@ class BookDaoJdbcTest {
     void setBookCategoryCategoryExists() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long categoryId = categoryDao.insert(new Category(DUMMY_ID, CURRENT_CATEGORY));
-        bookDao.setBookCategory(bookId, categoryId);
-        bookDao.setBookCategory(bookId, categoryId);
+        bookDao.addBookCategory(bookId, categoryId);
+        bookDao.addBookCategory(bookId, categoryId);
         assertEquals(1, bookDao.getBookCategory(bookId).size());
     }
 
@@ -244,9 +244,9 @@ class BookDaoJdbcTest {
     void setBookCategoryAddSecondCategory() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long categoryId = categoryDao.insert(new Category(DUMMY_ID, CURRENT_CATEGORY));
-        bookDao.setBookCategory(bookId, categoryId);
+        bookDao.addBookCategory(bookId, categoryId);
         categoryId = categoryDao.insert(new Category(DUMMY_ID, CURRENT_CATEGORY));
-        bookDao.setBookCategory(bookId, categoryId);
+        bookDao.addBookCategory(bookId, categoryId);
         assertEquals(2, bookDao.getBookCategory(bookId).size());
     }
 
@@ -255,7 +255,7 @@ class BookDaoJdbcTest {
     void getBookCategory() {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long categoryId = categoryDao.insert(new Category(DUMMY_ID, CURRENT_CATEGORY));
-        bookDao.setBookCategory(bookId, categoryId);
+        bookDao.addBookCategory(bookId, categoryId);
         List<Category> categoryList = bookDao.getBookCategory(bookId);
         assertTrue(categoryList.size() == 1 && categoryList.contains(new Category(categoryId, CURRENT_CATEGORY)));
     }
@@ -266,8 +266,8 @@ class BookDaoJdbcTest {
         long bookId = bookDao.insert(new Book(DUMMY_ID, CURRENT_BOOK));
         long categoryId = categoryDao.insert(new Category(DUMMY_ID, CURRENT_CATEGORY));
         long categoryId2 = categoryDao.insert(new Category(DUMMY_ID, CURRENT_CATEGORY_2));
-        bookDao.setBookCategory(bookId, categoryId);
-        bookDao.setBookCategory(bookId, categoryId2);
+        bookDao.addBookCategory(bookId, categoryId);
+        bookDao.addBookCategory(bookId, categoryId2);
         List<Category> categoryList = bookDao.getBookCategory(bookId);
         assertTrue(categoryList.size() == 2 && categoryList.contains(new Category(categoryId, CURRENT_CATEGORY)) && categoryList.contains(new Category(categoryId2, CURRENT_CATEGORY_2)));
     }
