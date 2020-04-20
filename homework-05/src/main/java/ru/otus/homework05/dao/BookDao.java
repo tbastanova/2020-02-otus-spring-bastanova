@@ -26,4 +26,7 @@ public interface BookDao {
     int addBookCategory(long bookId, long categoryId);
 
     List<Category> getBookCategory(long bookId);
+
+    boolean checkExists(long id);
+
 }

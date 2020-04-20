@@ -1,6 +1,8 @@
 package ru.otus.homework05.dao.jdbc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,10 +11,9 @@ import org.springframework.stereotype.Repository;
 import ru.otus.homework05.dao.AuthorDao;
 import ru.otus.homework05.dao.BookDao;
 import ru.otus.homework05.dao.CategoryDao;
-import ru.otus.homework05.dao.ext.BookAuthorRelation;
-import ru.otus.homework05.dao.ext.BookCategoryRelation;
+import ru.otus.homework05.dao.ext.BookRelation;
 import ru.otus.homework05.dao.mapper.AuthorMapper;
-import ru.otus.homework05.dao.mapper.BookResultSetExtractor;
+import ru.otus.homework05.dao.mapper.BookMapper;
 import ru.otus.homework05.dao.mapper.CategoryMapper;
 import ru.otus.homework05.domain.Author;
 import ru.otus.homework05.domain.Book;
@@ -27,27 +28,45 @@ import java.util.stream.Collectors;
 @Repository
 public class BookDaoJdbc implements BookDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final AuthorDao authorDao;
-    private final CategoryDao categoryDao;
+    @Autowired
+    private AuthorDao authorDao;
+    @Autowired
+    private CategoryDao categoryDao;
+
+    private static final Map<String, Object> authorRelationParam = Map.of(
+            "childTable", "author",
+            "relationTable", "book_author",
+            "parentField", "book_id",
+            "childField", "author_id",
+            "mapper", new AuthorMapper()
+    );
+
+    private static final Map<String, Object> categoryRelationParam = Map.of(
+            "childTable", "category",
+            "relationTable", "book_category",
+            "parentField", "book_id",
+            "childField", "category_id",
+            "mapper", new CategoryMapper()
+    );
 
     public BookDaoJdbc(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.authorDao = new AuthorDaoJdbc(jdbcTemplate);
-        this.categoryDao = new CategoryDaoJdbc(jdbcTemplate);
     }
 
+    @Override
     public long insert(Book book) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int i = jdbcTemplate.update("insert into book (name) values (:name)", new MapSqlParameterSource().addValue("name", book.getName()), keyHolder, new String[]{"id"});
         return (long) keyHolder.getKey();
     }
 
+    @Override
     public Book getById(long id) {
         try {
             Map<String, Object> params = Collections.singletonMap("id", id);
-            Book book = jdbcTemplate.query(
-                    "select b.id, b.name from book b where id = :id", params, new BookResultSetExtractor()
-            ).get(id);
+            Book book = jdbcTemplate.queryForObject(
+                    "select b.id, b.name from book b where id = :id", params, new BookMapper()
+            );
 
             if (book != null) {
                 book.setAuthors(getBookAuthor(id));
@@ -60,8 +79,9 @@ public class BookDaoJdbc implements BookDao {
         }
     }
 
+    @Override
     public int update(Book book) {
-        if (this.getById(book.getId()) == null) {
+        if (!checkExists(book.getId())) {
             throw new NoBookFoundException(new Throwable());
         }
 
@@ -71,7 +91,7 @@ public class BookDaoJdbc implements BookDao {
         return jdbcTemplate.update("update book set name=:name where id=:id", mapSqlParameterSource);
     }
 
-
+    @Override
     public void deleteById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         jdbcTemplate.update(
@@ -79,18 +99,21 @@ public class BookDaoJdbc implements BookDao {
         );
     }
 
+    @Override
     public long count() {
         return jdbcTemplate.queryForObject("select count(*) from book", new MapSqlParameterSource().addValue("id", 1), Integer.class);
     }
 
+    @Override
     public List<Book> getAll() {
         try {
             List<Author> authors = authorDao.findAllUsed();
-            List<BookAuthorRelation> authorRelations = getAllAuthorRelations();
+            List<BookRelation> authorRelations = getAllChildRelations(authorRelationParam);
             List<Category> categories = categoryDao.findAllUsed();
-            List<BookCategoryRelation> categoryRelations = getAllCategoryRelations();
+            List<BookRelation> categoryRelations = getAllChildRelations(categoryRelationParam);
 
-            Map<Long, Book> bookMap = jdbcTemplate.query("select b.id, b.name from book b", new BookResultSetExtractor());
+            List<Book> books = jdbcTemplate.query("select b.id, b.name from book b", new BookMapper());
+            Map<Long, Book> bookMap = books.stream().collect(Collectors.toMap(Book::getId, c -> c));
             mergeBookAuthorInfo(bookMap, authors, authorRelations);
             mergeBookCategoryInfo(bookMap, categories, categoryRelations);
             return new ArrayList<>(Objects.requireNonNull(bookMap).values());
@@ -99,88 +122,99 @@ public class BookDaoJdbc implements BookDao {
         }
     }
 
-    private List<BookAuthorRelation> getAllAuthorRelations() {
-        return jdbcTemplate.query("select book_id, author_id from book_author order by book_id, author_id",
-                (rs, i) -> new BookAuthorRelation(rs.getLong("book_id"), rs.getLong("author_id")));
-    }
-
-    private void mergeBookAuthorInfo(Map<Long, Book> books, List<Author> authors, List<BookAuthorRelation> relations) {
+    private void mergeBookAuthorInfo(Map<Long, Book> books, List<Author> authors, List<BookRelation> relations) {
         Map<Long, Author> authorMap = authors.stream().collect(Collectors.toMap(Author::getId, c -> c));
-        for (BookAuthorRelation r :
+        for (BookRelation r :
                 relations) {
-            if (books.containsKey(r.getBookId()) && authorMap.containsKey(r.getAuthorId())) {
-                books.get(r.getBookId()).getAuthors().add(authorMap.get(r.getAuthorId()));
+            if (books.containsKey(r.getBookId()) && authorMap.containsKey(r.getChildId())) {
+                books.get(r.getBookId()).getAuthors().add(authorMap.get(r.getChildId()));
             }
         }
     }
 
-    private List<BookCategoryRelation> getAllCategoryRelations() {
-        return jdbcTemplate.query("select book_id, category_id from book_category order by book_id, category_id",
-                (rs, i) -> new BookCategoryRelation(rs.getLong("book_id"), rs.getLong("category_id")));
-    }
-
-    private void mergeBookCategoryInfo(Map<Long, Book> books, List<Category> categories, List<BookCategoryRelation> relations) {
+    private void mergeBookCategoryInfo(Map<Long, Book> books, List<Category> categories, List<BookRelation> relations) {
         Map<Long, Category> categoryMap = categories.stream().collect(Collectors.toMap(Category::getId, c -> c));
-        for (BookCategoryRelation r :
+        for (BookRelation r :
                 relations) {
-            if (books.containsKey(r.getBookId()) && categoryMap.containsKey(r.getCategoryId())) {
-                books.get(r.getBookId()).getCategories().add(categoryMap.get(r.getCategoryId()));
+            if (books.containsKey(r.getBookId()) && categoryMap.containsKey(r.getChildId())) {
+                books.get(r.getBookId()).getCategories().add(categoryMap.get(r.getChildId()));
             }
         }
     }
 
+    @Override
     public int addBookAuthor(long bookId, long authorId) {
-        if (this.getById(bookId) == null) {
+        if (!checkExists(bookId)) {
             throw new NoBookFoundException(new Throwable());
         }
 
-        AuthorDao authorDao = new AuthorDaoJdbc(jdbcTemplate);
-        if (authorDao.getById(authorId) == null) {
+        if (!authorDao.checkExists(authorId)) {
             throw new NoAuthorFoundException(new Throwable());
         }
 
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("book_id", bookId);
-        mapSqlParameterSource.addValue("author_id", authorId);
-        int checkExists = jdbcTemplate.queryForObject("select count(*) from book_author where book_id=:book_id and author_id=:author_id", mapSqlParameterSource, Integer.class);
-
-        return checkExists < 1 ? jdbcTemplate.update("insert into book_author (book_id,author_id) values (:book_id,:author_id)", mapSqlParameterSource) : 1;
+        return addBookChild(authorRelationParam, bookId, authorId);
     }
 
+    @Override
     public List<Author> getBookAuthor(long bookId) {
-        try {
-            MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-            mapSqlParameterSource.addValue("id", bookId);
-            return jdbcTemplate.query("select a.* from author a, book_author ba where a.id=ba.author_id and ba.book_id=:id", mapSqlParameterSource, new AuthorMapper());
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        return (List<Author>) this.getBookChild(authorRelationParam, bookId);
     }
 
+    @Override
     public int addBookCategory(long bookId, long categoryId) {
-        if (this.getById(bookId) == null) {
+        if (!checkExists(bookId)) {
             throw new NoBookFoundException(new Throwable());
         }
 
         CategoryDao categoryDao = new CategoryDaoJdbc(jdbcTemplate);
-        if (categoryDao.getById(categoryId) == null) {
+        if (!categoryDao.checkExists(categoryId)) {
             throw new NoCategoryFoundException(new Throwable());
         }
 
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("book_id", bookId);
-        mapSqlParameterSource.addValue("category_id", categoryId);
-        int checkExists = jdbcTemplate.queryForObject("select count(*) from book_category where book_id=:book_id and category_id=:category_id", mapSqlParameterSource, Integer.class);
-        return checkExists < 1 ? jdbcTemplate.update("insert into book_category (book_id,category_id) values (:book_id,:category_id)", mapSqlParameterSource) : 1;
+        return addBookChild(categoryRelationParam, bookId, categoryId);
     }
 
+    @Override
     public List<Category> getBookCategory(long bookId) {
+        return (List<Category>) this.getBookChild(categoryRelationParam, bookId);
+    }
+
+    @Override
+    public boolean checkExists(long id) {
+        Map<String, Object> params = Collections.singletonMap("id", id);
+        int count = jdbcTemplate.queryForObject(
+                "select count(id) from book b where id = :id", params, Integer.class
+        );
+        return count == 1;
+    }
+
+    private List<BookRelation> getAllChildRelations(Map<String, Object> relationParam) {
+        String sql = String.format("select %s, %s from %s order by %s, %s", relationParam.get("parentField"), relationParam.get("childField"), relationParam.get("relationTable"), relationParam.get("parentField"), relationParam.get("childField"));
+        return jdbcTemplate.query(sql,
+                (rs, i) -> new BookRelation(rs.getLong((String) relationParam.get("parentField")), rs.getLong((String) relationParam.get("childField"))));
+    }
+
+    private List<?> getBookChild(Map<String, Object> relationParam, long bookId) {
         try {
             MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
             mapSqlParameterSource.addValue("id", bookId);
-            return jdbcTemplate.query("select a.* from category a, book_category ba where a.id=ba.category_id and ba.book_id=:id", mapSqlParameterSource, new CategoryMapper());
+            String sql = String.format("select a.* from %s a, %s ba where a.id=ba.%s and ba.%s=:id", relationParam.get("childTable"), relationParam.get("relationTable"), relationParam.get("childField"), relationParam.get("parentField"));
+            RowMapper mapper = (RowMapper) relationParam.get("mapper");
+            return (List<?>) jdbcTemplate.query(sql, mapSqlParameterSource, mapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
+
+    private int addBookChild(Map<String, Object> relationParam, long bookId, long childId) {
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("book_id", bookId);
+        mapSqlParameterSource.addValue("child_id", childId);
+        String sqlCheckExists = String.format("select count(*) from %s where %s=:book_id and %s=:child_id", relationParam.get("relationTable"), relationParam.get("parentField"), relationParam.get("childField"));
+        int checkExists = jdbcTemplate.queryForObject(sqlCheckExists, mapSqlParameterSource, Integer.class);
+
+        String sqlUpdate = String.format("insert into %s (%s,%s) values (:book_id,:child_id)", relationParam.get("relationTable"), relationParam.get("parentField"), relationParam.get("childField"));
+        return checkExists < 1 ? jdbcTemplate.update(sqlUpdate, mapSqlParameterSource) : 1;
+    }
+
 }

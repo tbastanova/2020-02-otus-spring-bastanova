@@ -18,4 +18,6 @@ public interface CategoryDao {
     List<Category> getAll();
 
     List<Category> findAllUsed();
+
+    boolean checkExists(long id);
 }

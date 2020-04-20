@@ -104,4 +104,19 @@ class AuthorDaoJdbcTest {
         authorDao.deleteById(authorId);
         assertNull(authorDao.getById(authorId));
     }
+
+    @DisplayName("checkExists проверил, что запись существует и вернул true")
+    @Test
+    void checkExistsReturnTrue() {
+        long authorId = authorDao.insert(new Author(DUMMY_ID, DUMMY_AUTHOR));
+        assertTrue(authorDao.checkExists(authorId) && authorDao.getById(authorId) != null);
+    }
+
+    @DisplayName("checkExists проверил, что запись существует и вернул false")
+    @Test
+    void checkExistsReturnFalse() {
+        long authorId = authorDao.insert(new Author(DUMMY_ID, DUMMY_AUTHOR));
+        authorDao.deleteById(authorId);
+        assertTrue(!authorDao.checkExists(authorId) && authorDao.getById(authorId) == null);
+    }
 }

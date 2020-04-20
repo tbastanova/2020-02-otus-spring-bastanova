@@ -23,12 +23,14 @@ public class CategoryDaoJdbc implements CategoryDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public long insert(Category category) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int i = jdbcTemplate.update("insert into category (name) values (:name)", new MapSqlParameterSource().addValue("name", category.getName()), keyHolder, new String[]{"id"});
         return (long) keyHolder.getKey();
     }
 
+    @Override
     public int update(Category category) {
         if (this.getById(category.getId()) == null) {
             throw new NoCategoryFoundException(new Throwable());
@@ -39,10 +41,12 @@ public class CategoryDaoJdbc implements CategoryDao {
         return jdbcTemplate.update("update category set name=:name where id=:id", mapSqlParameterSource);
     }
 
+    @Override
     public long count() {
         return jdbcTemplate.queryForObject("select count(*) from category", new MapSqlParameterSource().addValue("id", 1), Integer.class);
     }
 
+    @Override
     public Category getById(long id) {
         try {
             Map<String, Object> params = Collections.singletonMap("id", id);
@@ -54,6 +58,7 @@ public class CategoryDaoJdbc implements CategoryDao {
         }
     }
 
+    @Override
     public List<Category> getAll() {
         try {
             return jdbcTemplate.query("select * from category", new CategoryMapper());
@@ -62,6 +67,7 @@ public class CategoryDaoJdbc implements CategoryDao {
         }
     }
 
+    @Override
     public void deleteById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         jdbcTemplate.update(
@@ -69,7 +75,17 @@ public class CategoryDaoJdbc implements CategoryDao {
         );
     }
 
+    @Override
     public List<Category> findAllUsed() {
         return jdbcTemplate.query("select a.id, a.name from category a inner join book_category ba on a.id = ba.category_id group by a.id, a.name order by a.name", new CategoryMapper());
+    }
+
+    @Override
+    public boolean checkExists(long id) {
+        Map<String, Object> params = Collections.singletonMap("id", id);
+        int count = jdbcTemplate.queryForObject(
+                "select count(id) from category a where id = :id", params, Integer.class
+        );
+        return count == 1;
     }
 }

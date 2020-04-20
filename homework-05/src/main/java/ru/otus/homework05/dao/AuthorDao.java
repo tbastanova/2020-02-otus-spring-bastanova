@@ -18,4 +18,6 @@ public interface AuthorDao {
     List<Author> getAll();
 
     List<Author> findAllUsed();
+
+    boolean checkExists(long id);
 }

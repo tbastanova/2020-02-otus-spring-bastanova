@@ -23,12 +23,14 @@ public class AuthorDaoJdbc implements AuthorDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public long insert(Author author) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int i = jdbcTemplate.update("insert into author (name) values (:name)", new MapSqlParameterSource().addValue("name", author.getName()), keyHolder, new String[]{"id"});
         return (long) keyHolder.getKey();
     }
 
+    @Override
     public int update(Author author) {
         if (this.getById(author.getId()) == null) {
             throw new NoAuthorFoundException(new Throwable());
@@ -39,10 +41,12 @@ public class AuthorDaoJdbc implements AuthorDao {
         return jdbcTemplate.update("update author set name=:name where id=:id", mapSqlParameterSource);
     }
 
+    @Override
     public long count() {
         return jdbcTemplate.queryForObject("select count(*) from author", new MapSqlParameterSource().addValue("id", 1), Integer.class);
     }
 
+    @Override
     public Author getById(long id) {
         try {
             Map<String, Object> params = Collections.singletonMap("id", id);
@@ -54,6 +58,7 @@ public class AuthorDaoJdbc implements AuthorDao {
         }
     }
 
+    @Override
     public List<Author> getAll() {
         try {
             return jdbcTemplate.query("select * from author", new AuthorMapper());
@@ -62,6 +67,7 @@ public class AuthorDaoJdbc implements AuthorDao {
         }
     }
 
+    @Override
     public void deleteById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         jdbcTemplate.update(
@@ -69,7 +75,17 @@ public class AuthorDaoJdbc implements AuthorDao {
         );
     }
 
+    @Override
     public List<Author> findAllUsed() {
         return jdbcTemplate.query("select a.id, a.name from author a inner join book_author ba on a.id = ba.author_id group by a.id, a.name order by a.name", new AuthorMapper());
+    }
+
+    @Override
+    public boolean checkExists(long id) {
+        Map<String, Object> params = Collections.singletonMap("id", id);
+        int count = jdbcTemplate.queryForObject(
+                "select count(id) from author a where id = :id", params, Integer.class
+        );
+        return count == 1;
     }
 }

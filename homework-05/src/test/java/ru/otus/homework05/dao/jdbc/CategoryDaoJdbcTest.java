@@ -104,4 +104,19 @@ class CategoryDaoJdbcTest {
         categoryDao.deleteById(categoryId);
         assertNull(categoryDao.getById(categoryId));
     }
+
+    @DisplayName("checkExists проверил, что запись существует и вернул true")
+    @Test
+    void checkExistsReturnTrue() {
+        long categoryId = categoryDao.insert(new Category(DUMMY_ID, DUMMY_CATEGORY));
+        assertTrue(categoryDao.checkExists(categoryId) && categoryDao.getById(categoryId) != null);
+    }
+
+    @DisplayName("checkExists проверил, что запись существует и вернул false")
+    @Test
+    void checkExistsReturnFalse() {
+        long categoryId = categoryDao.insert(new Category(DUMMY_ID, DUMMY_CATEGORY));
+        categoryDao.deleteById(categoryId);
+        assertTrue(!categoryDao.checkExists(categoryId) && categoryDao.getById(categoryId) == null);
+    }
 }

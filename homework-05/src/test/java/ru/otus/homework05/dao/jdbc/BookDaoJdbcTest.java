@@ -279,4 +279,18 @@ class BookDaoJdbcTest {
         assertEquals(new ArrayList<>(), bookDao.getBookCategory(bookId));
     }
 
+    @DisplayName("checkExists проверил, что запись существует и вернул true")
+    @Test
+    void checkExistsReturnTrue() {
+        long bookId = bookDao.insert(new Book(DUMMY_ID, DUMMY_BOOK));
+        assertTrue(bookDao.checkExists(bookId) && bookDao.getById(bookId) != null);
+    }
+
+    @DisplayName("checkExists проверил, что запись существует и вернул false")
+    @Test
+    void checkExistsReturnFalse() {
+        long bookId = bookDao.insert(new Book(DUMMY_ID, DUMMY_BOOK));
+        bookDao.deleteById(bookId);
+        assertTrue(!bookDao.checkExists(bookId) && bookDao.getById(bookId) == null);
+    }
 }
