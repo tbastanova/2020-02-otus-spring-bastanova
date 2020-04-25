@@ -19,4 +19,6 @@ public interface CategoryRepositoryJpa {
     long count();
 
     boolean checkExists(long id);
+
+    List<Category> getCategoriesByBookId(long bookId);
 }

@@ -23,18 +23,21 @@ public class CommentShellCommands {
     }
 
     @ShellMethod(value = "Insert comment", key = {"insertcomment", "ik"})
+    @Transactional
     public String insertAuthor(@ShellOption(defaultValue = "New Comment") String commentText) {
         long commentId = repositoryJpa.insert(new Comment(DUMMY_ID, commentText));
         return String.format("Создан комментарий id = %d", commentId);
     }
 
     @ShellMethod(value = "Get comment by id", key = {"getcomment", "gk"})
+    @Transactional(readOnly = true)
     public String getCommentById(@ShellOption long commentId) {
         Comment comment = repositoryJpa.findById(commentId).get();
         return String.format("Комментарий: id = %d, name = %s", comment.getId(), comment.getText());
     }
 
     @ShellMethod(value = "Update comment", key = {"updatecomment", "uk"})
+    @Transactional(readOnly = true)
     public String updateComment(@ShellOption long commentId, String commentText) {
         repositoryJpa.update(new Comment(commentId, commentText));
         try {
@@ -45,12 +48,14 @@ public class CommentShellCommands {
     }
 
     @ShellMethod(value = "Delete comment", key = {"deletecomment", "dk"})
+    @Transactional
     public String deleteCommentById(@ShellOption long commentId) {
         repositoryJpa.deleteById(commentId);
         return String.format("Удален комментарий id = %d", commentId);
     }
 
     @ShellMethod(value = "Get all comments", key = {"getallcomment", "gak"})
+    @Transactional(readOnly = true)
     public void getAllComment() {
         for (Comment comment :
                 repositoryJpa.findAll()) {

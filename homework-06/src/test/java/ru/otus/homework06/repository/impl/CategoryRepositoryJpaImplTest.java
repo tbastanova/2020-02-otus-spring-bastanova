@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.homework06.exception.NoCategoryFoundException;
+import ru.otus.homework06.model.Book;
 import ru.otus.homework06.model.Category;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Репозиторий на основе Jpa для работы с категориями ")
 @DataJpaTest
-@Import({CategoryRepositoryJpaImpl.class})
+@Import({CategoryRepositoryJpaImpl.class, BookRepositoryJpaImpl.class})
 class CategoryRepositoryJpaImplTest {
 
     private static final int EXPECTED_NUMBER_OF_CATEGORIES = 11;
@@ -29,6 +30,9 @@ class CategoryRepositoryJpaImplTest {
     private static final long DUMMY_ID = 0;
     private static final String DUMMY_CATEGORY = "Dummy Category";
     private static final String CHANGED_CATEGORY = "Changed Category";
+    private static final String CURRENT_BOOK = "Current Book";
+    private static final long TEST_CATEGORY_ID_9 = 9;
+    private static final long TEST_CATEGORY_ID_10 = 10;
 
     private static final int EXPECTED_QUERIES_COUNT = 1;
 
@@ -37,6 +41,9 @@ class CategoryRepositoryJpaImplTest {
 
     @Autowired
     private TestEntityManager em;
+
+    @Autowired
+    private BookRepositoryJpaImpl bookRepositoryJpa;
 
     @DisplayName(" должен загружать информацию о нужной категории по ее id")
     @Test
@@ -139,5 +146,31 @@ class CategoryRepositoryJpaImplTest {
     @Test
     void checkExistsReturnFalse() {
         assertTrue(!repositoryJpa.checkExists(DUMMY_ID) && repositoryJpa.findById(DUMMY_ID).isEmpty());
+    }
+
+    @DisplayName("getCategoriesByBookId вернул категорию")
+    @Test
+    void getBookCategory() {
+        long bookId = bookRepositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
+        bookRepositoryJpa.addBookCategory(bookId, TEST_CATEGORY_ID_10);
+        List<Category> categoryList = repositoryJpa.getCategoriesByBookId(bookId);
+        assertTrue(categoryList.size() == 1 && categoryList.contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
+    }
+
+    @DisplayName("getCategoriesByBookId вернул две категории")
+    @Test
+    void getBookCategorys() {
+        long bookId = bookRepositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
+        bookRepositoryJpa.addBookCategory(bookId, TEST_CATEGORY_ID_9);
+        bookRepositoryJpa.addBookCategory(bookId, TEST_CATEGORY_ID_10);
+        List<Category> categoryList = repositoryJpa.getCategoriesByBookId(bookId);
+        assertTrue(categoryList.size() == 2 && categoryList.contains(em.find(Category.class, TEST_CATEGORY_ID_9)) && categoryList.contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
+    }
+
+    @DisplayName("getCategoriesByBookId вернул пустой список при отсутствии категорий")
+    @Test
+    void getBookCategoryNoCategoryFound() {
+        long bookId = bookRepositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
+        assertEquals(new ArrayList<>(), repositoryJpa.getCategoriesByBookId(bookId));
     }
 }

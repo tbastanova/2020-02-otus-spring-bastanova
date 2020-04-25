@@ -32,9 +32,7 @@ class BookRepositoryJpaImplTest {
     private static final long DUMMY_ID = 0;
     private static final String DUMMY_BOOK = "Dummy Book";
     private static final String CHANGED_BOOK = "Changed Book";
-    private static final long TEST_AUTHOR_ID_9 = 9;
     private static final long TEST_AUTHOR_ID_10 = 10;
-    private static final long TEST_CATEGORY_ID_9 = 9;
     private static final long TEST_CATEGORY_ID_10 = 10;
 
     private static final int EXPECTED_QUERIES_COUNT = 5;
@@ -154,48 +152,22 @@ class BookRepositoryJpaImplTest {
     @DisplayName("setBookAuthor добавил автора")
     @Test
     void setBookAuthorAddNewAuthor() {
-        assertFalse(repositoryJpa.getBookAuthor(FIRST_BOOK_ID).contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
+        assertFalse(repositoryJpa.findById(FIRST_BOOK_ID).get().getAuthors().contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
 
         repositoryJpa.addBookAuthor(FIRST_BOOK_ID, TEST_AUTHOR_ID_10);
-        assertTrue(repositoryJpa.getBookAuthor(FIRST_BOOK_ID).contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
+        assertTrue(repositoryJpa.findById(FIRST_BOOK_ID).get().getAuthors().contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
     }
 
     @DisplayName("setBookAuthor проверил, что автор уже добавлен и не стал добавлять его 2й раз")
     @Test
     void setBookAuthorAuthorExists() {
-        List<Author> authors = repositoryJpa.getBookAuthor(FIRST_BOOK_ID);
+        List<Author> authors = repositoryJpa.findById(FIRST_BOOK_ID).get().getAuthors();
         assertFalse(authors.contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
         int authorCount = authors.size();
 
         repositoryJpa.addBookAuthor(FIRST_BOOK_ID, TEST_AUTHOR_ID_10);
         repositoryJpa.addBookAuthor(FIRST_BOOK_ID, TEST_AUTHOR_ID_10);
-        assertEquals(authorCount + 1, repositoryJpa.getBookAuthor(FIRST_BOOK_ID).size());
-    }
-
-    @DisplayName("getBookAuthor вернул автора")
-    @Test
-    void getBookAuthor() {
-        long bookId = repositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
-        repositoryJpa.addBookAuthor(bookId, TEST_AUTHOR_ID_10);
-        List<Author> authorList = repositoryJpa.getBookAuthor(bookId);
-        assertTrue(authorList.size() == 1 && authorList.contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
-    }
-
-    @DisplayName("getBookAuthor вернул двух авторов")
-    @Test
-    void getBookAuthors() {
-        long bookId = repositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
-        repositoryJpa.addBookAuthor(bookId, TEST_AUTHOR_ID_9);
-        repositoryJpa.addBookAuthor(bookId, TEST_AUTHOR_ID_10);
-        List<Author> authorList = repositoryJpa.getBookAuthor(bookId);
-        assertTrue(authorList.size() == 2 && authorList.contains(em.find(Author.class, TEST_AUTHOR_ID_9)) && authorList.contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
-    }
-
-    @DisplayName("getBookAuthor вернул пустой список при отсутствии авторов")
-    @Test
-    void getBookAuthorNoAuthorFound() {
-        long bookId = repositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
-        assertEquals(new ArrayList<>(), repositoryJpa.getBookAuthor(bookId));
+        assertEquals(authorCount + 1, repositoryJpa.findById(FIRST_BOOK_ID).get().getAuthors().size());
     }
 
     @DisplayName("setBookCategory не нашел книгу")
@@ -213,48 +185,22 @@ class BookRepositoryJpaImplTest {
     @DisplayName("setBookCategory добавил категорию")
     @Test
     void setBookCategoryAddNewCategory() {
-        assertFalse(repositoryJpa.getBookCategory(FIRST_BOOK_ID).contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
+        assertFalse(repositoryJpa.findById(FIRST_BOOK_ID).get().getCategories().contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
 
         repositoryJpa.addBookCategory(FIRST_BOOK_ID, TEST_CATEGORY_ID_10);
-        assertTrue(repositoryJpa.getBookCategory(FIRST_BOOK_ID).contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
+        assertTrue(repositoryJpa.findById(FIRST_BOOK_ID).get().getCategories().contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
     }
 
     @DisplayName("setBookCategory проверил, что категория уже добавлена и не стал добавлять ее 2й раз")
     @Test
     void setBookCategoryCategoryExists() {
-        List<Category> categories = repositoryJpa.getBookCategory(FIRST_BOOK_ID);
+        List<Category> categories = repositoryJpa.findById(FIRST_BOOK_ID).get().getCategories();
         assertFalse(categories.contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
         int categoryCount = categories.size();
 
         repositoryJpa.addBookCategory(FIRST_BOOK_ID, TEST_CATEGORY_ID_10);
         repositoryJpa.addBookCategory(FIRST_BOOK_ID, TEST_CATEGORY_ID_10);
-        assertEquals(categoryCount + 1, repositoryJpa.getBookCategory(FIRST_BOOK_ID).size());
-    }
-
-    @DisplayName("getBookCategory вернул категорию")
-    @Test
-    void getBookCategory() {
-        long bookId = repositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
-        repositoryJpa.addBookCategory(bookId, TEST_CATEGORY_ID_10);
-        List<Category> categoryList = repositoryJpa.getBookCategory(bookId);
-        assertTrue(categoryList.size() == 1 && categoryList.contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
-    }
-
-    @DisplayName("getBookCategory вернул две категории")
-    @Test
-    void getBookCategorys() {
-        long bookId = repositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
-        repositoryJpa.addBookCategory(bookId, TEST_CATEGORY_ID_9);
-        repositoryJpa.addBookCategory(bookId, TEST_CATEGORY_ID_10);
-        List<Category> categoryList = repositoryJpa.getBookCategory(bookId);
-        assertTrue(categoryList.size() == 2 && categoryList.contains(em.find(Category.class, TEST_CATEGORY_ID_9)) && categoryList.contains(em.find(Category.class, TEST_CATEGORY_ID_10)));
-    }
-
-    @DisplayName("getBookCategory вернул пустой список при отсутствии категорий")
-    @Test
-    void getBookCategoryNoCategoryFound() {
-        long bookId = repositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
-        assertEquals(new ArrayList<>(), repositoryJpa.getBookCategory(bookId));
+        assertEquals(categoryCount + 1, repositoryJpa.findById(FIRST_BOOK_ID).get().getCategories().size());
     }
 
     @DisplayName("checkExists проверил, что запись существует и вернул true")

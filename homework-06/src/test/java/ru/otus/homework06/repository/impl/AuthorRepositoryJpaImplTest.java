@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.homework06.exception.NoAuthorFoundException;
 import ru.otus.homework06.model.Author;
+import ru.otus.homework06.model.Book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Репозиторий на основе Jpa для работы с авторами ")
 @DataJpaTest
-@Import({AuthorRepositoryJpaImpl.class})
+@Import({AuthorRepositoryJpaImpl.class, BookRepositoryJpaImpl.class})
 class AuthorRepositoryJpaImplTest {
 
     private static final int EXPECTED_NUMBER_OF_AUTHORS = 11;
@@ -29,6 +30,9 @@ class AuthorRepositoryJpaImplTest {
     private static final long DUMMY_ID = 0;
     private static final String DUMMY_AUTHOR = "Dummy Author";
     private static final String CHANGED_AUTHOR = "Changed Author";
+    private static final String CURRENT_BOOK = "Current Book";
+    private static final long TEST_AUTHOR_ID_9 = 9;
+    private static final long TEST_AUTHOR_ID_10 = 10;
 
     private static final int EXPECTED_QUERIES_COUNT = 1;
 
@@ -37,6 +41,9 @@ class AuthorRepositoryJpaImplTest {
 
     @Autowired
     private TestEntityManager em;
+
+    @Autowired
+    private BookRepositoryJpaImpl bookRepositoryJpa;
 
     @DisplayName(" должен загружать информацию о нужном авторе по его id")
     @Test
@@ -139,5 +146,31 @@ class AuthorRepositoryJpaImplTest {
     @Test
     void checkExistsReturnFalse() {
         assertTrue(!repositoryJpa.checkExists(DUMMY_ID) && repositoryJpa.findById(DUMMY_ID).isEmpty());
+    }
+
+    @DisplayName("getAuthorsByBookId вернул автора")
+    @Test
+    void getBookAuthor() {
+        long bookId = bookRepositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
+        bookRepositoryJpa.addBookAuthor(bookId, TEST_AUTHOR_ID_10);
+        List<Author> authorList = repositoryJpa.getAuthorsByBookId(bookId);
+        assertTrue(authorList.size() == 1 && authorList.contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
+    }
+
+    @DisplayName("getAuthorsByBookId вернул двух авторов")
+    @Test
+    void getBookAuthors() {
+        long bookId = bookRepositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
+        bookRepositoryJpa.addBookAuthor(bookId, TEST_AUTHOR_ID_9);
+        bookRepositoryJpa.addBookAuthor(bookId, TEST_AUTHOR_ID_10);
+        List<Author> authorList = repositoryJpa.getAuthorsByBookId(bookId);
+        assertTrue(authorList.size() == 2 && authorList.contains(em.find(Author.class, TEST_AUTHOR_ID_9)) && authorList.contains(em.find(Author.class, TEST_AUTHOR_ID_10)));
+    }
+
+    @DisplayName("getAuthorsByBookId вернул пустой список при отсутствии авторов")
+    @Test
+    void getBookAuthorNoAuthorFound() {
+        long bookId = bookRepositoryJpa.insert(new Book(DUMMY_ID, CURRENT_BOOK));
+        assertEquals(new ArrayList<>(), repositoryJpa.getAuthorsByBookId(bookId));
     }
 }

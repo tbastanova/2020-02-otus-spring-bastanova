@@ -19,4 +19,6 @@ public interface AuthorRepositoryJpa {
     long count();
 
     boolean checkExists(long id);
+
+    List<Author> getAuthorsByBookId(long bookId);
 }

@@ -3,8 +3,6 @@ package ru.otus.homework06;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.sql.SQLException;
-
 @SpringBootApplication
 public class Homework06Application {
 

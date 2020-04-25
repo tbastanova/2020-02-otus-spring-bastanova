@@ -1,8 +1,6 @@
 package ru.otus.homework06.repository;
 
-import ru.otus.homework06.model.Author;
 import ru.otus.homework06.model.Book;
-import ru.otus.homework06.model.Category;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,9 +22,5 @@ public interface BookRepositoryJpa {
 
     void addBookAuthor(long bookId, long authorId);
 
-    List<Author> getBookAuthor(long bookId);
-
     void addBookCategory(long bookId, long categoryId);
-
-    List<Category> getBookCategory(long bookId);
 }

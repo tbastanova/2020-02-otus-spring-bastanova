@@ -1,7 +1,6 @@
 package ru.otus.homework06.repository.impl;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework06.exception.NoAuthorFoundException;
 import ru.otus.homework06.model.Author;
 import ru.otus.homework06.repository.AuthorRepositoryJpa;
@@ -10,11 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
 @Repository
 public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
 
@@ -36,6 +33,7 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
     public long insert(Author author) {
         author.setId(0);
         em.persist(author);
+        em.flush();
         return author.getId();
     }
 
@@ -48,6 +46,8 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
         query.setParameter("id", author.getId());
         if (query.executeUpdate() == 0) {
             throw new NoAuthorFoundException(new Throwable());
+        } else {
+            em.flush();
         }
     }
 
@@ -58,20 +58,27 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
                 "where a.id = :id");
         query.setParameter("id", id);
         query.executeUpdate();
+        em.flush();
     }
 
     @Override
     public long count() {
-        BigInteger count = (BigInteger) em.createNativeQuery("select count(id) from Author a").getSingleResult();
-        return count.longValue();
+        return em.createQuery("select count(a) from Author a", Long.class).getSingleResult();
     }
 
     @Override
     public boolean checkExists(long id) {
-        Query query = em.createNativeQuery("select count(id) from Author a where a.id = :id");
+        Query query = em.createQuery("select count(id) from Author a where a.id = :id", Long.class);
         query.setParameter("id", id);
-        BigInteger count = (BigInteger) query.getSingleResult();
-        return count.intValue() == 1;
+        Long count = (Long) query.getSingleResult();
+        return count == 1;
+    }
+
+    @Override
+    public List<Author> getAuthorsByBookId(long bookId) {
+        Query query = em.createNativeQuery("select * from Author a, book_author ba where a.id=ba.author_id and ba.book_id = :book_id", Author.class);
+        query.setParameter("book_id", bookId);
+        return query.getResultList();
     }
 
 }

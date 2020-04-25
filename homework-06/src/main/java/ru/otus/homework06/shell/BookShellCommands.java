@@ -3,20 +3,21 @@ package ru.otus.homework06.shell;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework06.exception.NoAuthorFoundException;
 import ru.otus.homework06.exception.NoBookFoundException;
 import ru.otus.homework06.exception.NoCategoryFoundException;
 import ru.otus.homework06.exception.NoCommentFoundException;
-import ru.otus.homework06.model.Author;
 import ru.otus.homework06.model.Book;
-import ru.otus.homework06.model.Category;
 import ru.otus.homework06.repository.BookRepositoryJpa;
+import ru.otus.homework06.repository.CommentRepositoryJpa;
 import ru.otus.homework06.service.BookService;
 import ru.otus.homework06.service.CommentService;
 
 @ShellComponent
 public class BookShellCommands {
     private final BookRepositoryJpa repositoryJpa;
+    private final CommentRepositoryJpa commentRepositoryJpa;
     private final BookService bookService;
     private final CommentService commentService;
 
@@ -26,25 +27,29 @@ public class BookShellCommands {
     private static final String NO_CATEGORY_FOUND_EXCEPTION_TEXT = "Категория с id = %d не найдена";
     private static final String NO_COMMENT_FOUND_EXCEPTION_TEXT = "Комментарий с id = %d не найден";
 
-    public BookShellCommands(BookRepositoryJpa repositoryJpa, BookService bookService, CommentService commentService) {
+    public BookShellCommands(BookRepositoryJpa repositoryJpa, CommentRepositoryJpa commentRepositoryJpa, BookService bookService, CommentService commentService) {
         this.repositoryJpa = repositoryJpa;
+        this.commentRepositoryJpa = commentRepositoryJpa;
         this.bookService = bookService;
         this.commentService = commentService;
     }
 
     @ShellMethod(value = "Insert book", key = {"insertbook", "ib"})
+    @Transactional
     public String insertBook(@ShellOption(defaultValue = "New Book") String bookName) {
         long bookId = repositoryJpa.insert(new Book(DUMMY_ID, bookName));
         return String.format("Создана книга id = %d", bookId);
     }
 
     @ShellMethod(value = "Get book by id", key = {"getbook", "gb"})
+    @Transactional(readOnly = true)
     public String getBookById(@ShellOption long bookId) {
         Book book = repositoryJpa.findById(bookId).get();
         return bookService.getBookToString(book);
     }
 
     @ShellMethod(value = "Update book", key = {"updatebook", "ub"})
+    @Transactional
     public String updateBook(@ShellOption long bookId, String bookName) {
         repositoryJpa.update(new Book(bookId, bookName));
         try {
@@ -55,6 +60,7 @@ public class BookShellCommands {
     }
 
     @ShellMethod(value = "Delete book", key = {"deletebook", "db"})
+    @Transactional
     public String deleteBookById(@ShellOption long bookId) {
         repositoryJpa.deleteById(bookId);
         return String.format("Удалена книга id = %d", bookId);
@@ -66,6 +72,7 @@ public class BookShellCommands {
     }
 
     @ShellMethod(value = "Get all books", key = {"getallbook", "gab", "getall", "all"})
+    @Transactional(readOnly = true)
     public void getAllBook() {
         for (Book book :
                 repositoryJpa.findAll()) {
@@ -74,6 +81,7 @@ public class BookShellCommands {
     }
 
     @ShellMethod(value = "Set book author", key = {"setbookauthor", "sba"})
+    @Transactional
     public void setBookAuthor(@ShellOption long bookId, long authorId) {
         try {
             repositoryJpa.addBookAuthor(bookId, authorId);
@@ -88,17 +96,8 @@ public class BookShellCommands {
         }
     }
 
-    @ShellMethod(value = "Get book author", key = {"getbookauthor", "gba"})
-    public void getBookAuthor(@ShellOption long bookId) {
-        System.out.printf("Авторы книги \"%s\":", repositoryJpa.findById(bookId).get().getName());
-        System.out.println();
-        for (Author author :
-                repositoryJpa.getBookAuthor(bookId)) {
-            System.out.println(author.getId() + " | " + author.getName());
-        }
-    }
-
     @ShellMethod(value = "Set book category", key = {"setbookcategory", "sbc"})
+    @Transactional
     public void setBookCategory(@ShellOption long bookId, long categoryId) {
         try {
             repositoryJpa.addBookCategory(bookId, categoryId);
@@ -113,19 +112,10 @@ public class BookShellCommands {
         }
     }
 
-    @ShellMethod(value = "Get book category", key = {"getbookcategory", "gbc"})
-    public void getBookCategory(@ShellOption long bookId) {
-        System.out.printf("Категории книги \"%s\":", repositoryJpa.findById(bookId).get().getName());
-        System.out.println();
-        for (Category category :
-                repositoryJpa.getBookCategory(bookId)) {
-            System.out.println(category.getId() + " | " + category.getName());
-        }
-    }
-
     @ShellMethod(value = "Get comments by book id", key = {"getbookcomment", "gbk"})
     public void getCommentByBookId(long bookId) {
-        System.out.print(bookService.getBookCommentToString(bookId));
+
+        System.out.print(bookService.getBookCommentToString(repositoryJpa.findById(bookId).get(), commentRepositoryJpa.findByBookId(bookId)));
     }
 
     @ShellMethod(value = "Add book comment", key = {"addbookcomment", "abk"})
