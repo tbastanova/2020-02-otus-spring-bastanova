@@ -1,5 +1,6 @@
 package ru.otus.homework06.repository;
 
+import ru.otus.homework06.model.Book;
 import ru.otus.homework06.model.Comment;
 
 import java.util.List;
@@ -20,5 +21,5 @@ public interface CommentRepositoryJpa {
 
     List<Comment> findByBookId(long id);
 
-    void updateBookId(long commentId, long bookId);
+    void updateBookId(Comment comment, Book book);
 }

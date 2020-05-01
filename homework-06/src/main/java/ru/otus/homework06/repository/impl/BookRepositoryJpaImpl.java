@@ -1,6 +1,7 @@
 package ru.otus.homework06.repository.impl;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework06.exception.NoAuthorFoundException;
 import ru.otus.homework06.exception.NoBookFoundException;
 import ru.otus.homework06.exception.NoCategoryFoundException;
@@ -34,6 +35,7 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public long insert(Book book) {
         book.setId(0);
         em.persist(book);
@@ -42,6 +44,7 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void update(Book book) {
         Query query = em.createQuery("update Book b " +
                 "set b.name = :name " +
@@ -56,6 +59,7 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Query query = em.createQuery("delete " +
                 "from Book b " +
@@ -79,6 +83,7 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void addBookAuthor(long bookId, long authorId) {
         Optional<Book> book = this.findById(bookId);
         Author author = em.find(Author.class, authorId);
@@ -95,6 +100,7 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void addBookCategory(long bookId, long categoryId) {
         Optional<Book> book = this.findById(bookId);
         Category category = em.find(Category.class, categoryId);

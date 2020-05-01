@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import ru.otus.homework06.exception.NoBookFoundException;
 import ru.otus.homework06.exception.NoCommentFoundException;
 import ru.otus.homework06.model.Book;
 import ru.otus.homework06.model.Comment;
@@ -181,12 +180,6 @@ class CommentRepositoryJpaImplTest {
         assertTrue(repositoryJpa.findByBookId(DUMMY_ID).equals(new ArrayList<>()));
     }
 
-    @DisplayName("updateBookId не нашел книгу и вернул ошибку")
-    @Test
-    void updateBookIdNoBookFound() {
-        assertThrows(NoBookFoundException.class, () -> repositoryJpa.updateBookId(DUMMY_ID, DUMMY_ID));
-    }
-
     @DisplayName("updateBookId привязал комментарий к книге")
     @Test
     void updateBookId() {
@@ -194,7 +187,7 @@ class CommentRepositoryJpaImplTest {
         long commentId = repositoryJpa.insert(comment);
         Book book = new Book(DUMMY_ID, CURRENT_BOOK);
         long bookId = bookRepositoryJpa.insert(book);
-        repositoryJpa.updateBookId(commentId, bookId);
+        repositoryJpa.updateBookId(comment, book);
         List<Comment> foundComments = repositoryJpa.findByBookId(bookId);
         assertTrue(foundComments.contains(comment));
     }

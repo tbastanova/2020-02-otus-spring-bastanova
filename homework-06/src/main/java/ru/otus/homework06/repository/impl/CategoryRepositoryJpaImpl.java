@@ -1,6 +1,7 @@
 package ru.otus.homework06.repository.impl;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework06.exception.NoCategoryFoundException;
 import ru.otus.homework06.model.Category;
 import ru.otus.homework06.repository.CategoryRepositoryJpa;
@@ -30,6 +31,7 @@ public class CategoryRepositoryJpaImpl implements CategoryRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public long insert(Category category) {
         category.setId(0);
         em.persist(category);
@@ -38,6 +40,7 @@ public class CategoryRepositoryJpaImpl implements CategoryRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void update(Category category) {
         Query query = em.createQuery("update Category a " +
                 "set a.name = :name " +
@@ -52,6 +55,7 @@ public class CategoryRepositoryJpaImpl implements CategoryRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Query query = em.createQuery("delete " +
                 "from Category a " +
@@ -76,7 +80,7 @@ public class CategoryRepositoryJpaImpl implements CategoryRepositoryJpa {
 
     @Override
     public List<Category> getCategoriesByBookId(long bookId) {
-        Query query = em.createNativeQuery("select * from category a, book_category ba where a.id=ba.category_id and ba.book_id = :book_id", Category.class);
+        Query query = em.createQuery("select a from Category a inner join a.books b where b.id = :book_id", Category.class);
         query.setParameter("book_id", bookId);
         return query.getResultList();
     }

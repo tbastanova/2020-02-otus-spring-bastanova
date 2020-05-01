@@ -44,4 +44,12 @@ public class Book {
         this.authors = new ArrayList<>();
         this.categories = new ArrayList<>();
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

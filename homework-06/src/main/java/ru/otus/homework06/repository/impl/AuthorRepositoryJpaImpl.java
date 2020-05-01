@@ -1,6 +1,7 @@
 package ru.otus.homework06.repository.impl;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework06.exception.NoAuthorFoundException;
 import ru.otus.homework06.model.Author;
 import ru.otus.homework06.repository.AuthorRepositoryJpa;
@@ -30,6 +31,7 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public long insert(Author author) {
         author.setId(0);
         em.persist(author);
@@ -38,6 +40,7 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void update(Author author) {
         Query query = em.createQuery("update Author a " +
                 "set a.name = :name " +
@@ -52,6 +55,7 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Query query = em.createQuery("delete " +
                 "from Author a " +
@@ -76,7 +80,7 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
 
     @Override
     public List<Author> getAuthorsByBookId(long bookId) {
-        Query query = em.createNativeQuery("select * from Author a, book_author ba where a.id=ba.author_id and ba.book_id = :book_id", Author.class);
+        Query query = em.createQuery("select a from Author a inner join a.books b where b.id = :book_id", Author.class);
         query.setParameter("book_id", bookId);
         return query.getResultList();
     }

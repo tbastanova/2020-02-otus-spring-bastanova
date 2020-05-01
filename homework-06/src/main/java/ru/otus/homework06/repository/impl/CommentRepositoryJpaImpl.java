@@ -1,10 +1,10 @@
 package ru.otus.homework06.repository.impl;
 
 import org.springframework.stereotype.Repository;
-import ru.otus.homework06.exception.NoBookFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework06.exception.NoCommentFoundException;
+import ru.otus.homework06.model.Book;
 import ru.otus.homework06.model.Comment;
-import ru.otus.homework06.repository.BookRepositoryJpa;
 import ru.otus.homework06.repository.CommentRepositoryJpa;
 
 import javax.persistence.EntityManager;
@@ -20,12 +20,6 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpa {
     @PersistenceContext
     private EntityManager em;
 
-    private BookRepositoryJpa bookRepositoryJpa;
-
-    public CommentRepositoryJpaImpl(BookRepositoryJpa bookRepositoryJpa) {
-        this.bookRepositoryJpa = bookRepositoryJpa;
-    }
-
     @Override
     public Optional<Comment> findById(long id) {
         return Optional.ofNullable(em.find(Comment.class, id));
@@ -38,6 +32,7 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public long insert(Comment comment) {
         comment.setId(0);
         em.persist(comment);
@@ -46,6 +41,7 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void update(Comment comment) {
         Query query = em.createQuery("update Comment a " +
                 "set a.text = :text " +
@@ -60,6 +56,7 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpa {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Query query = em.createQuery("delete " +
                 "from Comment a " +
@@ -79,26 +76,15 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpa {
 
     @Override
     public List<Comment> findByBookId(long bookId) {
-        Query query = em.createNativeQuery("select * from Comment a where a.book_id = :book_id", Comment.class);
+        Query query = em.createQuery("select a from Comment a inner join a.book b where b.id = :book_id", Comment.class);
         query.setParameter("book_id", bookId);
         return query.getResultList();
     }
 
     @Override
-    public void updateBookId(long commentId, long bookId) {
-        if (!bookRepositoryJpa.checkExists(bookId)) {
-            throw new NoBookFoundException(new Throwable());
-        }
-
-        Query query = em.createNativeQuery("update comment a " +
-                "set a.book_id = :book_id " +
-                "where a.id = :id");
-        query.setParameter("book_id", bookId);
-        query.setParameter("id", commentId);
-        if (query.executeUpdate() == 0) {
-            throw new NoCommentFoundException(new Throwable());
-        } else {
-            em.flush();
-        }
+    @Transactional
+    public void updateBookId(Comment comment, Book book) {
+        comment.setBook(book);
+        em.flush();
     }
 }

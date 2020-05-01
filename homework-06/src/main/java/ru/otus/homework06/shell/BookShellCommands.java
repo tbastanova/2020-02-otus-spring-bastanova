@@ -3,7 +3,6 @@ package ru.otus.homework06.shell;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework06.exception.NoAuthorFoundException;
 import ru.otus.homework06.exception.NoBookFoundException;
 import ru.otus.homework06.exception.NoCategoryFoundException;
@@ -35,32 +34,31 @@ public class BookShellCommands {
     }
 
     @ShellMethod(value = "Insert book", key = {"insertbook", "ib"})
-    @Transactional
     public String insertBook(@ShellOption(defaultValue = "New Book") String bookName) {
         long bookId = repositoryJpa.insert(new Book(DUMMY_ID, bookName));
         return String.format("Создана книга id = %d", bookId);
     }
 
     @ShellMethod(value = "Get book by id", key = {"getbook", "gb"})
-    @Transactional(readOnly = true)
     public String getBookById(@ShellOption long bookId) {
-        Book book = repositoryJpa.findById(bookId).get();
-        return bookService.getBookToString(book);
+        try {
+            return bookService.getBookByIdToString(bookId);
+        } catch (NoBookFoundException e) {
+            return String.format(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
+        }
     }
 
     @ShellMethod(value = "Update book", key = {"updatebook", "ub"})
-    @Transactional
     public String updateBook(@ShellOption long bookId, String bookName) {
         repositoryJpa.update(new Book(bookId, bookName));
         try {
-            return bookService.getBookToString(repositoryJpa.findById(bookId).get());
+            return bookService.getBookByIdToString(bookId);
         } catch (NoBookFoundException e) {
             return String.format(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
         }
     }
 
     @ShellMethod(value = "Delete book", key = {"deletebook", "db"})
-    @Transactional
     public String deleteBookById(@ShellOption long bookId) {
         repositoryJpa.deleteById(bookId);
         return String.format("Удалена книга id = %d", bookId);
@@ -72,21 +70,16 @@ public class BookShellCommands {
     }
 
     @ShellMethod(value = "Get all books", key = {"getallbook", "gab", "getall", "all"})
-    @Transactional(readOnly = true)
     public void getAllBook() {
-        for (Book book :
-                repositoryJpa.findAll()) {
-            System.out.println(bookService.getBookToString(book));
-        }
+        System.out.println(bookService.getAllBooksToString());
     }
 
     @ShellMethod(value = "Set book author", key = {"setbookauthor", "sba"})
-    @Transactional
     public void setBookAuthor(@ShellOption long bookId, long authorId) {
         try {
             repositoryJpa.addBookAuthor(bookId, authorId);
             System.out.println("В книгу добавлен автор:");
-            System.out.println(bookService.getBookToString(repositoryJpa.findById(bookId).get()));
+            System.out.println(bookService.getBookByIdToString(bookId));
         } catch (NoBookFoundException e) {
             System.out.printf(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
             System.out.println();
@@ -97,12 +90,11 @@ public class BookShellCommands {
     }
 
     @ShellMethod(value = "Set book category", key = {"setbookcategory", "sbc"})
-    @Transactional
     public void setBookCategory(@ShellOption long bookId, long categoryId) {
         try {
             repositoryJpa.addBookCategory(bookId, categoryId);
             System.out.println("В книгу добавлена категория:");
-            System.out.println(bookService.getBookToString(repositoryJpa.findById(bookId).get()));
+            System.out.println(bookService.getBookByIdToString(bookId));
         } catch (NoBookFoundException e) {
             System.out.printf(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
             System.out.println();
@@ -114,8 +106,13 @@ public class BookShellCommands {
 
     @ShellMethod(value = "Get comments by book id", key = {"getbookcomment", "gbk"})
     public void getCommentByBookId(long bookId) {
-
-        System.out.print(bookService.getBookCommentToString(repositoryJpa.findById(bookId).get(), commentRepositoryJpa.findByBookId(bookId)));
+        try {
+            Book book = repositoryJpa.findById(bookId).orElseThrow(() -> new NoBookFoundException(new Throwable()));
+            System.out.print(bookService.getBookCommentToString(book, commentRepositoryJpa.findByBookId(bookId)));
+        } catch (NoBookFoundException e) {
+            System.out.printf(NO_BOOK_FOUND_EXCEPTION_TEXT, bookId);
+            System.out.println();
+        }
     }
 
     @ShellMethod(value = "Add book comment", key = {"addbookcomment", "abk"})

@@ -10,4 +10,8 @@ public interface BookService {
     String getBookToString(Book book);
 
     String getBookCommentToString(Book book, List<Comment> commentList);
+
+    String getBookByIdToString(long bookId);
+
+    String getAllBooksToString();
 }
