@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all categories</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .categories, .categories td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h2>Категории:</h2>
+<a th:href="@{/addCategory(bookId=${bookId})}" href="addCategory.html">Cоздать</a>
+<table class="categories">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="category : ${categories}">
+        <td th:text="${category.id}">1</td>
+        <td th:text="${category.name}">John Doe</td>
+        <td>
+            <a th:href="@{/linkCategory(bookId=${bookId}, categoryId=${category.id})}" href="editBook.html">Выбрать</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
