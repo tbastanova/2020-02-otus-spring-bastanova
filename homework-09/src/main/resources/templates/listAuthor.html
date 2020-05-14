@@ -29,7 +29,9 @@
         <td th:text="${author.id}">1</td>
         <td th:text="${author.name}">John Doe</td>
         <td>
-            <a th:href="@{/linkAuthor(bookId=${bookId}, authorId=${author.id})}" href="editBook.html">Выбрать</a>
+            <form id="button-form" th:action="@{/linkAuthor(bookId=${bookId}, authorId=${author.id})}" th:method="post">
+                <button type="submit">Выбрать</button>
+            </form>
         </td>
     </tr>
     </tbody>

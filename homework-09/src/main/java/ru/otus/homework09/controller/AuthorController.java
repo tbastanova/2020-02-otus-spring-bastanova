@@ -29,7 +29,7 @@ public class AuthorController {
         return "listAuthor";
     }
 
-    @GetMapping("/linkAuthor")
+    @PostMapping("/linkAuthor")
     public String linkAuthor(
             @RequestParam("bookId") long bookId,
             @RequestParam("authorId") long authorId,
@@ -37,14 +37,14 @@ public class AuthorController {
     ) {
         bookService.setBookAuthor(bookId, authorId);
         model = bookService.getEditBookModel(bookId, model);
-        return "editBook";
+        return "redirect:/edit?bookId=" + bookId;
     }
 
-    @GetMapping("/unlinkAuthor")
+    @PostMapping("/unlinkAuthor")
     public String unlinkAuthor(@RequestParam("bookId") long bookId, @RequestParam("authorId") long authorId, Model model) {
         bookService.removeBookAuthor(bookId, authorId);
         model = bookService.getEditBookModel(bookId, model);
-        return "editBook";
+        return "redirect:/edit?bookId=" + bookId;
     }
 
     @GetMapping("/addAuthor")
@@ -64,6 +64,6 @@ public class AuthorController {
     ) {
         authorService.save(author);
         listAuthor(bookId, model);
-        return "listAuthor";
+        return "redirect:/listAuthor?bookId=" + bookId;
     }
 }

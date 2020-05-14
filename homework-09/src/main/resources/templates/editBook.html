@@ -66,74 +66,82 @@
     <div class="row">
         <button type="submit">Cохранить</button>
     </div>
-
-    <table>
-        <td>
-            <h3>Авторы:</h3>
-            <a th:href="@{/listAuthor(bookId=${book.id})}" href="listAuthor.html">Добавить</a>
-            <table class="authors">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Название</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="author : ${book.authors}">
-                    <td th:text="${author.id}">1</td>
-                    <td th:text="${author.name}">John Doe</td>
-                    <td>
-                        <a th:href="@{/unlinkAuthor(bookId=${book.id}, authorId=${author.id})}" href="listBook.html">Удалить</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-        <td>
-            <h3>Категории:</h3>
-            <a th:href="@{/listCategory(bookId=${book.id})}" href="listCategory.html">Добавить</a>
-            <table class="categories">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Название</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="category : ${book.categories}">
-                    <td th:text="${category.id}">1</td>
-                    <td th:text="${category.name}">John Doe</td>
-                    <td>
-                        <a th:href="@{/unlinkCategory(bookId=${book.id}, categoryId=${category.id})}"
-                           href="listBook.html">Удалить</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </table>
-
 </form>
+<table>
+    <td>
+        <h3>Авторы:</h3>
+        <a th:href="@{/listAuthor(bookId=${book.id})}" href="listAuthor.html">Добавить</a>
+        <table class="authors">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="author : ${book.authors}">
+                <td th:text="${author.id}">1</td>
+                <td th:text="${author.name}">John Doe</td>
+                <td>
+                    <form id="button-form" th:action="@{/unlinkAuthor(bookId=${book.id}, authorId=${author.id})}"
+                          th:method="post">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+    <td>
+        <h3>Категории:</h3>
+        <a th:href="@{/listCategory(bookId=${book.id})}" href="listCategory.html">Добавить</a>
+        <table class="categories">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category : ${book.categories}">
+
+                <td th:text="${category.id}">1</td>
+                <td th:text="${category.name}">John Doe</td>
+                <td>
+                    <form id="button-form" th:action="@{/unlinkCategory(bookId=${book.id}, categoryId=${category.id})}"
+                          th:method="post">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</table>
+
+
+<h3>Комментарии:</h3>
+<table class="comments">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Комментарий</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${comments}">
+        <td th:text="${comment.id}">1</td>
+        <td th:text="${comment.text}">John Doe</td>
+        <td>
+            <form id="button-form" th:action="@{/deleteComment(bookId=${book.id}, commentId=${comment.id})}"
+                  th:method="post">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 <form id="comments-form" th:action="@{/addComment(bookId=${book.id})}" th:method="post" action="editBook.html">
-    <h3>Комментарии:</h3>
-    <table class="comments">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Комментарий</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="comment : ${comments}">
-            <td th:text="${comment.id}">1</td>
-            <td th:text="${comment.text}">John Doe</td>
-            <td>
-                <a th:href="@{/deleteComment(bookId=${book.id}, commentId=${comment.id})}"
-                   href="editBook.html">Удалить</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
     <table>
         <td>
             <div class="row">

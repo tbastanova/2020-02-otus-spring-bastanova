@@ -2,7 +2,6 @@ package ru.otus.homework09.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.homework09.model.Comment;
@@ -27,13 +26,13 @@ public class CommentController {
     ) {
         commentService.addBookComment(bookId, comment.getText());
         model = bookService.getEditBookModel(bookId, model);
-        return "editBook";
+        return "redirect:/edit?bookId=" + bookId;
     }
 
-    @GetMapping("/deleteComment")
+    @PostMapping("/deleteComment")
     public String deleteComment(@RequestParam("bookId") long bookId, @RequestParam("commentId") long commentId, Model model) {
         commentService.deleteById(commentId);
         model = bookService.getEditBookModel(bookId, model);
-        return "editBook";
+        return "redirect:/edit?bookId=" + bookId;
     }
 }

@@ -29,7 +29,7 @@ public class CategoryController {
         return "listCategory";
     }
 
-    @GetMapping("/linkCategory")
+    @PostMapping("/linkCategory")
     public String linkCategory(
             @RequestParam("bookId") long bookId,
             @RequestParam("categoryId") long categoryId,
@@ -37,14 +37,14 @@ public class CategoryController {
     ) {
         bookService.setBookCategory(bookId, categoryId);
         model = bookService.getEditBookModel(bookId, model);
-        return "editBook";
+        return "redirect:/edit?bookId=" + bookId;
     }
 
-    @GetMapping("/unlinkCategory")
+    @PostMapping("/unlinkCategory")
     public String unlinkCategory(@RequestParam("bookId") long bookId, @RequestParam("categoryId") long categoryId, Model model) {
         bookService.removeBookCategory(bookId, categoryId);
         model = bookService.getEditBookModel(bookId, model);
-        return "editBook";
+        return "redirect:/edit?bookId=" + bookId;
     }
 
     @GetMapping("/addCategory")
@@ -64,6 +64,6 @@ public class CategoryController {
     ) {
         categoryService.save(category);
         listCategory(bookId, model);
-        return "listCategory";
+        return "redirect:/listCategory?bookId=" + bookId;
     }
 }
