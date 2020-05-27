@@ -1,0 +1,11 @@
+data:
+  init:
+    dataPath: test.json
+spring:
+  data:
+    mongodb:
+      port: 0
+      database: test
+logging:
+  level:
+    root: ERROR
