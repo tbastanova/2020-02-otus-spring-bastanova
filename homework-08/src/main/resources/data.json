@@ -1,0 +1,294 @@
+[
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Айн Рэнд",
+    "id": "1",
+    "books": [
+      {
+        "id": "1"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Джером Клапка Джером",
+    "id": "2",
+    "books": [
+      {
+        "id": "2"
+      },
+      {
+        "id": "4"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Джером Сэлинджер",
+    "id": "3",
+    "books": [
+      {
+        "id": "3"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Ральф Альфер",
+    "id": "4",
+    "books": [
+      {
+        "id": "5"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Джордж Гамов",
+    "id": "5",
+    "books": [
+      {
+        "id": "5"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Ганс Бэт",
+    "id": "6",
+    "books": [
+      {
+        "id": "5"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Роман",
+    "id": "1",
+    "books": [
+      {
+        "id": "1"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Юмор",
+    "id": "2",
+    "books": [
+      {
+        "id": "2"
+      },
+      {
+        "id": "4"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Повесть",
+    "id": "3",
+    "books": [
+      {
+        "id": "3"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Физика",
+    "id": "4",
+    "books": [
+      {
+        "id": "5"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Искаженное название",
+    "id": "5",
+    "books": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      },
+      {
+        "id": "3"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Book",
+    "name": "Атлант затарил гречи",
+    "id": "1",
+    "authors": [
+      {
+        "id": "1"
+      }
+    ],
+    "categories": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "5"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Book",
+    "name": "Трое в лодке, нищета и собаки",
+    "id": "2",
+    "authors": [
+      {
+        "id": "2"
+      }
+    ],
+    "categories": [
+      {
+        "id": "2"
+      },
+      {
+        "id": "5"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Book",
+    "name": "Над пропастью моржи",
+    "id": "3",
+    "authors": [
+      {
+        "id": "3"
+      }
+    ],
+    "categories": [
+      {
+        "id": "3"
+      },
+      {
+        "id": "5"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Book",
+    "name": "Трое на четырех колесах",
+    "id": "4",
+    "authors": [
+      {
+        "id": "2"
+      }
+    ],
+    "categories": [
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Book",
+    "name": "Происхождение химических элементов",
+    "id": "5",
+    "authors": [
+      {
+        "id": "4"
+      },
+      {
+        "id": "5"
+      },
+      {
+        "id": "6"
+      }
+    ],
+    "categories": [
+      {
+        "id": "4"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 1",
+    "id": "1",
+    "book": {
+      "id": "1"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 2",
+    "id": "2",
+    "book": {
+      "id": "1"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 3",
+    "id": "3",
+    "book": {
+      "id": "2"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 4",
+    "id": "4",
+    "book": {
+      "id": "2"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 5",
+    "id": "5",
+    "book": {
+      "id": "2"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 6",
+    "id": "6",
+    "book": {
+      "id": "3"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 7",
+    "id": "7",
+    "book": {
+      "id": "4"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 7",
+    "id": "7",
+    "book": {
+      "id": "5"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 8",
+    "id": "8",
+    "book": {
+      "id": "5"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 9",
+    "id": "9",
+    "book": {
+      "id": "2"
+    }
+  }
+]

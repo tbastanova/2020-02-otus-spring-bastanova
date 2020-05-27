@@ -1,0 +1,229 @@
+[
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Автор 1",
+    "id": "1",
+    "books": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Автор 2",
+    "id": "2",
+    "books": [
+      {
+        "id": "1"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Автор 3",
+    "id": "3",
+    "books": [
+      {
+        "id": "1"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Автор 4",
+    "id": "4",
+    "books": [
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Author",
+    "name": "Автор 5",
+    "id": "5",
+    "books": [
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Категория 1",
+    "id": "1",
+    "books": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Категория 2",
+    "id": "2",
+    "books": [
+      {
+        "id": "1"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Категория 3",
+    "id": "3",
+    "books": [
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Category",
+    "name": "Категория 4",
+    "id": "4",
+    "books": [
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Book",
+    "name": "Книга 1",
+    "id": "1",
+    "authors": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      },
+      {
+        "id": "3"
+      }
+    ],
+    "categories": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Book",
+    "name": "Книга 2",
+    "id": "2",
+    "authors": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "4"
+      },
+      {
+        "id": "5"
+      }
+    ],
+    "categories": [
+      {
+        "id": "1"
+      },
+      {
+        "id": "3"
+      },
+      {
+        "id": "4"
+      }
+    ]
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 1",
+    "id": "1",
+    "book": {
+      "id": "1"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 2",
+    "id": "2",
+    "book": {
+      "id": "1"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 3",
+    "id": "3",
+    "book": {
+      "id": "1"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 4",
+    "id": "4",
+    "book": {
+      "id": "1"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 5",
+    "id": "5",
+    "book": {
+      "id": "1"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 6",
+    "id": "6",
+    "book": {
+      "id": "2"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 7",
+    "id": "7",
+    "book": {
+      "id": "2"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 7",
+    "id": "7",
+    "book": {
+      "id": "2"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 8",
+    "id": "8",
+    "book": {
+      "id": "2"
+    }
+  },
+  {
+    "_class": "ru.otus.homework08.model.Comment",
+    "text": "Комментарий 9",
+    "id": "9",
+    "book": {
+      "id": "2"
+    }
+  }
+]
