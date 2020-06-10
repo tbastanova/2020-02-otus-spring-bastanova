@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+    <meta name="bookId" th:content="${bookId}"/>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        input {
+            width: 300px;
+        }
+    </style>
+</head>
+
+<br>
+
+<h2>Авторы:</h2>
+
+<form id="addAuthorForm">
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="newAuthor">
+    <tr>
+        <td>
+            <input id="newAuthorInput" type="text" value=""/>
+        </td>
+        <td>
+            <button id="btnPostAuthor" class="btnPostAuthor" onclick="
+                $.post('/author',
+                {
+                    name: $('#newAuthorInput').val()
+                },
+                function(result) {
+                   location.reload();
+                   });">Создать
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</form>
+<br></br>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="authorsTable">
+    </tbody>
+</table>
+
+<script>
+
+    $(document).ready(function () {
+        var bookId = $("meta[name=bookId]").attr("content");
+        var urlPick = '\'/book/' + bookId + '/author\'';
+        var urlBook = '\'/editBook/' + bookId + '\'';
+        $.get('/authors').done(function (authors) {
+            authors.forEach(function (author) {
+                $('#authorsTable').append(`
+                    <tr>
+                        <td>${author.id}</td>
+                        <td>${author.name}</td>
+                        <td>
+                            <button class="btnPick" onclick="$.ajax({
+                                        url: ${urlPick},
+                                        type: 'PUT',
+                                        data:{
+                                            id: ${author.id},
+                                        },
+                                        success: function(result) {
+                                            location.href=${urlBook};
+                                        }
+                                });">Выбрать</button>
+                        </td>
+                    </tr>
+                `)
+            });
+        });
+    });
+
+
+</script>
+</body>
+</html>

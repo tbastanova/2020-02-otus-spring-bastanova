@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="bookId" th:content="${bookId}"/>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        input {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+
+<a th:href="@{/}" href="listBook.html">Вернуться к списку книг</a>
+<br/>
+<h2>Книги:</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="booksTable">
+    </tbody>
+</table>
+
+<table>
+    <td width="50%">
+        <h3>Авторы:</h3>
+        <button class="btnAddBookAuthor" onclick="location.href='/listAuthor';"
+        >Добавить
+        </button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="authorsTable">
+            </tbody>
+        </table>
+    </td>
+    <td width="50%">
+        <h3>Категории:</h3>
+        <button class="btnAddBookCategory" onclick="location.href='/listCategory';"
+        >Добавить
+        </button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="categoriesTable">
+            </tbody>
+        </table>
+    </td>
+</table>
+<br/>
+<h3>Комментарии:</h3>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Комментарий</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="commentsTable">
+    </tbody>
+</table>
+<br/>
+<form id="addBookCommentForm">
+    <label for="newBookCommentInput" align="left">Комментарий:</label>
+    <input id="newBookCommentInput" type="text" value=""/>
+</form>
+
+<script>
+
+    $(document).ready(function () {
+        var id = $("meta[name=bookId]").attr("content");
+        var url = "/book/" + id;
+        var urlComments = "/book/" + id + "/comments";
+        var urlAddComment = "\'/book/" + id + "/comment\'";
+        $.get(url).done(function (book) {
+            $('#booksTable').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td><input id="updateBookInput" type="text" value="${book.name}"/></td>
+                        <td><button class="btnUpdateBook" onclick="$.ajax({
+                                        url: '/book/${book.id}',
+                                        type: 'PATCH',
+                                        data: {
+                                            id: ${book.id},
+                                            name: $('#updateBookInput').val()
+                                        },
+                                        success: function(result) {
+                                            // location.reload();
+                                        }
+                                });">Сохранить</button></td>
+                     </tr>
+                `);
+            book.authors.forEach(function (author) {
+                {
+                    $('#authorsTable').append(`
+                        <tr>
+                            <td>${author.id}</td>
+                            <td>${author.name}</td>
+                            <td>
+                            <button class="btnUnlinkAuthor" onclick="$.ajax({
+                                        url: '/book/${book.id}/author/${author.id}',
+                                        type: 'DELETE',
+                                        success: function(result) {
+                                            location.reload();
+                                        }
+                                });">Удалить</button>
+                            </td>
+                        </tr>
+                    `)
+                }
+            });
+            book.categories.forEach(function (category) {
+                {
+                    $('#categoriesTable').append(`
+                        <tr>
+                            <td>${category.id}</td>
+                            <td>${category.name}</td>
+                            <td>
+                            <button class="btnUnlinkCategory" onclick="$.ajax({
+                                        url: '/book/${book.id}/category/${category.id}',
+                                        type: 'DELETE',
+                                        success: function(result) {
+                                            location.reload();
+                                        }
+                                });">Удалить</button>
+                            </td>
+                        </tr>
+                    `)
+                }
+            });
+        });
+
+        $.get(urlComments).done(function (comments) {
+            comments.forEach(function (comment) {
+                {
+                    $('#commentsTable').append(`
+                        <tr>
+                            <td>${comment.id}</td>
+                            <td>${comment.text}</td>
+                            <td>
+                            <button class="btnDeleteComment" onclick="$.ajax({
+                                        url: '/comment/${comment.id}',
+                                        type: 'DELETE',
+                                        success: function(result) {
+                                            location.reload();
+                                        }
+                                });">Удалить</button>
+                            </td>
+                        </tr>
+                    `)
+                }
+            });
+            $('#addBookCommentForm').append(`
+                    <button id = "btnPostBookComment" onClick = "
+                    $.post(${urlAddComment},
+                        {
+                            text: $('#newBookCommentInput').val()
+                        },
+                        function (result) {
+                            location.reload();
+                        });
+                    ">Добавить</button>
+                `)
+        })
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        input {
+            width: 300px;
+        }
+    </style>
+</head>
+
+
+<br>
+
+<h2>Книги:</h2>
+
+<form id="addBookForm">
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="newBook">
+    <tr>
+        <td>
+            <input id="newBookInput" type="text" value=""/>
+        </td>
+        <td>
+            <button id="btnPostBook" class="btnPostBook" onclick="
+                $.post('/book',
+                {
+                    name: $('#newBookInput').val()
+                },
+                function(result) {
+                   location.reload();
+                   });">Создать
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</form>
+<br></br>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="booksTable">
+    </tbody>
+</table>
+
+<script>
+
+    $(document).ready(function () {
+        $.get('/books').done(function (books) {
+            books.forEach(function (book) {
+                $('#booksTable').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.name}</td>
+                        <td>
+                            <button class="btnEdit" onclick="location.href='/editBook/${book.id}';"
+                              >Изменить</button>
+                        </td>
+                        <td>
+                            <button class="btnDelete" onclick="$.ajax({
+                                        url: '/book/${book.id}',
+                                        type: 'DELETE',
+                                        success: function(result) {
+                                            location.reload();
+                                        }
+                                });">Удалить</button>
+                        </td>
+                    </tr>
+                `)
+            });
+        });
+    });
+
+
+</script>
+</body>
+</html>
