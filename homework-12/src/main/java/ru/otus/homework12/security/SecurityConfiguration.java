@@ -26,17 +26,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure( HttpSecurity http ) throws Exception {
+    public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers( "/**").authenticated()
+                .authorizeRequests().antMatchers("/**").authenticated()
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/books")
                 .and().rememberMe()
         ;
         http.rememberMe()
-                .key( "SuperPuperSecretKey" )
-                .tokenValiditySeconds( 50000 )
+                .key("SuperPuperSecretKey")
+                .tokenValiditySeconds(50000)
         ;
     }
 

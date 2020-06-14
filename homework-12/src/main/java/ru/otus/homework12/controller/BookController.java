@@ -16,7 +16,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping({"/","/books"})
+    @GetMapping({"/", "/books"})
     public String listPage(Model model) {
         model.addAttribute("books", bookService.findAll());
         return "listBook";
