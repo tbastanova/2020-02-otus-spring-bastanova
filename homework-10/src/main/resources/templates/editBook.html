@@ -100,10 +100,15 @@
 <script>
 
     $(document).ready(function () {
-        var id = $("meta[name=bookId]").attr("content");
-        var url = "/book/" + id;
-        var urlComments = "/book/" + id + "/comments";
-        var urlAddComment = "\'/book/" + id + "/comment\'";
+        const id = $("meta[name=bookId]").attr("content");
+        reloadBook(id);
+        reloadAuthor(id);
+        reloadCategory(id);
+        reloadComment(id);
+    });
+
+    function reloadBook(id) {
+        const url = "/book/" + id;
         $.get(url).done(function (book) {
             $('#booksTable').append(`
                     <tr>
@@ -117,42 +122,54 @@
                                             name: $('#updateBookInput').val()
                                         },
                                         success: function(result) {
-                                            // location.reload();
+
                                         }
                                 });">Сохранить</button></td>
                      </tr>
                 `);
-            book.authors.forEach(function (author) {
+        });
+    }
+
+    function reloadAuthor(bookId) {
+        const urlAuthors = "/book/" + bookId + "/author";
+        $.get(urlAuthors).done(function (authors) {
+            authors.forEach(function (author) {
                 {
                     $('#authorsTable').append(`
-                        <tr>
+                        <tr id='author${author.id}'>
                             <td>${author.id}</td>
                             <td>${author.name}</td>
                             <td>
                             <button class="btnUnlinkAuthor" onclick="$.ajax({
-                                        url: '/book/${book.id}/author/${author.id}',
+                                        url: '/book/${bookId}/author/${author.id}',
                                         type: 'DELETE',
                                         success: function(result) {
-                                            location.reload();
-                                        }
+                                            $('#author${author.id}').remove();
+                                         }
                                 });">Удалить</button>
                             </td>
                         </tr>
                     `)
                 }
             });
-            book.categories.forEach(function (category) {
+        });
+    }
+
+    function reloadCategory(bookId) {
+        const urlCategories = "/book/" + bookId + "/category";
+        $.get(urlCategories).done(function (categories) {
+            categories.forEach(function (category) {
                 {
                     $('#categoriesTable').append(`
-                        <tr>
+                        <tr id='category${category.id}'>
                             <td>${category.id}</td>
                             <td>${category.name}</td>
                             <td>
                             <button class="btnUnlinkCategory" onclick="$.ajax({
-                                        url: '/book/${book.id}/category/${category.id}',
+                                        url: '/book/${bookId}/category/${category.id}',
                                         type: 'DELETE',
                                         success: function(result) {
-                                            location.reload();
+                                            $('#category${category.id}').remove();
                                         }
                                 });">Удалить</button>
                             </td>
@@ -161,12 +178,16 @@
                 }
             });
         });
+    }
 
+    function reloadComment(bookId) {
+        const urlComments = "/book/" + bookId + "/comment";
+        const urlAddComment = "\'/book/" + bookId + "/comment\'";
         $.get(urlComments).done(function (comments) {
             comments.forEach(function (comment) {
                 {
                     $('#commentsTable').append(`
-                        <tr>
+                        <tr id='comment${comment.id}'>
                             <td>${comment.id}</td>
                             <td>${comment.text}</td>
                             <td>
@@ -174,7 +195,7 @@
                                         url: '/comment/${comment.id}',
                                         type: 'DELETE',
                                         success: function(result) {
-                                            location.reload();
+                                            $('#comment${comment.id}').remove();
                                         }
                                 });">Удалить</button>
                             </td>
@@ -189,13 +210,12 @@
                             text: $('#newBookCommentInput').val()
                         },
                         function (result) {
-                            location.reload();
+                            reloadComment(${bookId});
                         });
                     ">Добавить</button>
                 `)
-        })
-    });
-
+        });
+    }
 
 </script>
 </body>

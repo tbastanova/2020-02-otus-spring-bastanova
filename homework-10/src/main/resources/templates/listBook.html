@@ -50,7 +50,7 @@
                     name: $('#newBookInput').val()
                 },
                 function(result) {
-                   location.reload();
+                   reloadBook();
                    });">Создать
             </button>
         </td>
@@ -74,10 +74,14 @@
 <script>
 
     $(document).ready(function () {
-        $.get('/books').done(function (books) {
+        reloadBook();
+    });
+
+    function reloadBook() {
+        $.get('/book').done(function (books) {
             books.forEach(function (book) {
                 $('#booksTable').append(`
-                    <tr>
+                    <tr id='book${book.id}'>
                         <td>${book.id}</td>
                         <td>${book.name}</td>
                         <td>
@@ -89,7 +93,7 @@
                                         url: '/book/${book.id}',
                                         type: 'DELETE',
                                         success: function(result) {
-                                            location.reload();
+                                            $('#book${book.id}').remove();
                                         }
                                 });">Удалить</button>
                         </td>
@@ -97,8 +101,8 @@
                 `)
             });
         });
-    });
 
+    }
 
 </script>
 </body>

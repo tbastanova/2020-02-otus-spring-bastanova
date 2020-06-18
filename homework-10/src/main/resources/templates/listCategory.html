@@ -49,7 +49,7 @@
                     name: $('#newCategoryInput').val()
                 },
                 function(result) {
-                   location.reload();
+                   reloadCategory();
                    });">Создать
             </button>
         </td>
@@ -72,13 +72,18 @@
 <script>
 
     $(document).ready(function () {
-        var bookId = $("meta[name=bookId]").attr("content");
-        var urlPick = '\'/book/' + bookId + '/category\'';
-        var urlBook = '\'/editBook/' + bookId + '\'';
-        $.get('/categories').done(function (categories) {
+        const bookId = $("meta[name=bookId]").attr("content");
+
+        reloadCategory(bookId);
+    });
+
+    function reloadCategory(bookId) {
+        const urlPick = '\'/book/' + bookId + '/category\'';
+        const urlBook = '\'/editBook/' + bookId + '\'';
+        $.get('/category').done(function (categories) {
             categories.forEach(function (category) {
                 $('#categoriesTable').append(`
-                    <tr>
+                    <tr 'category${category.id}'>
                         <td>${category.id}</td>
                         <td>${category.name}</td>
                         <td>
@@ -97,8 +102,7 @@
                 `)
             });
         });
-    });
-
+    }
 
 </script>
 </body>

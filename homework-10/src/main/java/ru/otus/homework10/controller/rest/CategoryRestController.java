@@ -1,5 +1,7 @@
 package ru.otus.homework10.controller.rest;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,16 +21,17 @@ public class CategoryRestController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/categories")
+    @GetMapping("/category")
     public List<CategoryDto> getAllCategories() {
         return categoryService.findAll().stream().map(CategoryDto::toDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping("/category")
-    public void insertCategory(
+    public ResponseEntity insertCategory(
             Category category
     ) {
         categoryService.save(category);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 }

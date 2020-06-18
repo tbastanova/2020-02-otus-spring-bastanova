@@ -49,7 +49,7 @@
                     name: $('#newAuthorInput').val()
                 },
                 function(result) {
-                   location.reload();
+                   reloadAuthor();
                    });">Создать
             </button>
         </td>
@@ -73,12 +73,16 @@
 
     $(document).ready(function () {
         var bookId = $("meta[name=bookId]").attr("content");
+        reloadAuthor(bookId);
+    });
+
+    function reloadAuthor(bookId) {
         var urlPick = '\'/book/' + bookId + '/author\'';
         var urlBook = '\'/editBook/' + bookId + '\'';
-        $.get('/authors').done(function (authors) {
+        $.get('/author').done(function (authors) {
             authors.forEach(function (author) {
                 $('#authorsTable').append(`
-                    <tr>
+                    <tr id='author${author.id}'>
                         <td>${author.id}</td>
                         <td>${author.name}</td>
                         <td>
@@ -97,8 +101,7 @@
                 `)
             });
         });
-    });
-
+    }
 
 </script>
 </body>

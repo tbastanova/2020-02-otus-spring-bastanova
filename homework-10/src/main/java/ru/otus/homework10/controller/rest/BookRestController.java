@@ -1,8 +1,11 @@
 package ru.otus.homework10.controller.rest;
 
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.otus.homework10.controller.rest.dto.AuthorDto;
 import ru.otus.homework10.controller.rest.dto.BookDto;
+import ru.otus.homework10.controller.rest.dto.CategoryDto;
 import ru.otus.homework10.model.Author;
 import ru.otus.homework10.model.Book;
 import ru.otus.homework10.model.Category;
@@ -20,7 +23,7 @@ public class BookRestController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/books")
+    @GetMapping("/book")
     public List<BookDto> getAllBooks() {
         return bookService.findAll().stream().map(BookDto::toDto)
                 .collect(Collectors.toList());
@@ -37,11 +40,11 @@ public class BookRestController {
     }
 
     @PostMapping("/book")
-    public void insertBook(
-            Book book,
-            Model model
+    public ResponseEntity insertBook(
+            Book book
     ) {
         bookService.save(book);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @PatchMapping("/book/{id}")
@@ -71,6 +74,12 @@ public class BookRestController {
         bookService.setBookAuthor(bookId, author.getId());
     }
 
+    @GetMapping("/book/{bookId}/author")
+    public List<AuthorDto> getBookAuthors(@PathVariable("bookId") long bookId) {
+        return bookService.findById(bookId).getAuthors().stream().map(AuthorDto::toDto)
+                .collect(Collectors.toList());
+    }
+
     @DeleteMapping("/book/{bookId}/category/{categoryId}")
     public void unlinkCategory(@PathVariable("bookId") long bookId, @PathVariable("categoryId") long categoryId) {
         bookService.removeBookCategory(bookId, categoryId);
@@ -82,5 +91,11 @@ public class BookRestController {
             Category category
     ) {
         bookService.setBookCategory(bookId, category.getId());
+    }
+
+    @GetMapping("/book/{bookId}/category")
+    public List<CategoryDto> getBookCategories(@PathVariable("bookId") long bookId) {
+        return bookService.findById(bookId).getCategories().stream().map(CategoryDto::toDto)
+                .collect(Collectors.toList());
     }
 }

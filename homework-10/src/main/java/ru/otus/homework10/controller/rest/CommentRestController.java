@@ -1,5 +1,7 @@
 package ru.otus.homework10.controller.rest;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.homework10.controller.rest.dto.CommentDto;
 import ru.otus.homework10.model.Comment;
@@ -17,18 +19,19 @@ public class CommentRestController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/book/{bookId}/comments")
+    @GetMapping("/book/{bookId}/comment")
     public List<CommentDto> getBookComments(@PathVariable("bookId") long bookId) {
         return commentService.findByBook_Id(bookId).stream().map(CommentDto::toDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping("/book/{bookId}/comment")
-    public void insertComment(
+    public ResponseEntity insertComment(
             @PathVariable("bookId") long bookId,
             Comment comment
     ) {
         commentService.addBookComment(bookId, comment.getText());
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/comment/{id}")
