@@ -15,7 +15,7 @@ public class LifeCycleService {
 
     private final Nature nature;
 
-    private static final String[] Larvas = {"Зеленая гусеница", "Красная гусеница", "Черная гусеница", "Синяя гусеница"};
+    private static final String[] LARVAS = {"Зеленая гусеница", "Красная гусеница", "Черная гусеница", "Синяя гусеница"};
 
 
     public LifeCycleService(Nature nature) {
@@ -44,12 +44,12 @@ public class LifeCycleService {
     }
 
     private static Larva generateLarva() {
-        return new Larva(Larvas[RandomUtils.nextInt(0, Larvas.length)]);
+        return new Larva(LARVAS[RandomUtils.nextInt(0, LARVAS.length)]);
     }
 
     private static Collection<Larva> generateLarvas() {
         List<Larva> items = new ArrayList<>();
-        for (int i = 0; i < RandomUtils.nextInt(1, Larvas.length); ++i) {
+        for (int i = 0; i < RandomUtils.nextInt(1, LARVAS.length); ++i) {
             items.add(generateLarva());
         }
         return items;

@@ -9,6 +9,7 @@ import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.scheduling.PollerMetadata;
+import ru.otus.homework15.service.LarvaService;
 
 @Configuration
 public class IntegrationConfig {
@@ -29,10 +30,10 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public IntegrationFlow butterflyFlow() {
+    public IntegrationFlow butterflyFlow(LarvaService larvaService) {
         return IntegrationFlows.from("larvaChannel")
                 .split()
-                .handle("larvaService", "pupate")
+                .handle(larvaService, "pupate")
                 .aggregate()
                 .channel("butterflyChannel")
                 .get();

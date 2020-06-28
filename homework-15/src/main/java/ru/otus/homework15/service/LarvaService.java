@@ -8,7 +8,7 @@ import ru.otus.homework15.domain.Larva;
 @Service
 public class LarvaService {
 
-    private static final String[] Butterflies = {"Капустница", "Павлиний глаз", "Голубянка", "Монарх", "Адмирал"};
+    private static final String[] BUTTERFLIES = {"Капустница", "Павлиний глаз", "Голубянка", "Монарх", "Адмирал"};
 
     public Butterfly pupate(Larva larva) throws Exception {
         System.out.println(larva.getName() + " окуклилась");
@@ -18,6 +18,6 @@ public class LarvaService {
     }
 
     private static Butterfly generateButterfly() {
-        return new Butterfly(Butterflies[RandomUtils.nextInt(0, Butterflies.length)]);
+        return new Butterfly(BUTTERFLIES[RandomUtils.nextInt(0, BUTTERFLIES.length)]);
     }
 }
