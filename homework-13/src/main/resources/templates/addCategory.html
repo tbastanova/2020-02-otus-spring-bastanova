@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add category</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<form id="addCategory-form" th:action="@{/addCategory(bookId=${bookId})}" th:method="post" action="addCategory.html">
+    <a th:href="@{/listCategory(bookId=${bookId})}" href="listCategory.html">Вернутьcя к cпиcку категорий</a>
+    <h1>Информация о категории:</h1>
+
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" th:value="${category.id}" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="category-input">Название:</label>
+        <input id="category-input" name="name" type="text" th:value="${category.name}" value="John Doe"/>
+    </div>
+
+    <div class="row">
+        <button type="submit">Cохранить</button>
+    </div>
+</form>
+
+</body>
+</html>
