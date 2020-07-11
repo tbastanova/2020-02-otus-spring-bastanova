@@ -28,54 +28,54 @@ public class BookRestController {
     }
 
     @DeleteMapping("/book/{id}")
-    public void deleteBook(@PathVariable String id) {
-        bookService.deleteById(id);
+    public Mono<Void> deleteBook(@PathVariable String id) {
+        return bookService.deleteById(id);
     }
 
     @PostMapping("/book")
-    public void insertBook(
+    public Mono<Book> insertBook(
             Book book
     ) {
-        bookService.save(book);
+        return bookService.save(book);
     }
 
     @PatchMapping("/book/{id}")
-    public void updateBook(@PathVariable String id,
-                           Book book
+    public Mono<Book> updateBook(@PathVariable String id,
+                                 Book book
     ) {
-        bookService.save(book);
+        return bookService.save(book);
     }
 
     @PutMapping("/book/{id}")
-    public void putBook(@PathVariable String id,
-                        Book book
+    public Mono<Book> putBook(@PathVariable String id,
+                              Book book
     ) {
-        bookService.save(book);
+        return bookService.save(book);
     }
 
     @DeleteMapping("/book/{bookId}/author/{authorId}")
-    public void unlinkAuthor(@PathVariable("bookId") String bookId, @PathVariable("authorId") String authorId) {
-        bookService.findById(bookId).subscribe(i -> bookService.removeBookAuthor(i, authorId));
+    public Mono<Book> unlinkAuthor(@PathVariable("bookId") String bookId, @PathVariable("authorId") String authorId) {
+        return bookService.findById(bookId).flatMap(i -> bookService.removeBookAuthor(i, authorId));
     }
 
     @PutMapping("/book/{bookId}/author")
-    public void linkAuthor(
+    public Mono<Book> linkAuthor(
             @PathVariable("bookId") String bookId,
             Author author
     ) {
-        bookService.findById(bookId).subscribe(i -> bookService.setBookAuthor(i, author));
+        return bookService.findById(bookId).flatMap(i -> bookService.setBookAuthor(i, author));
     }
 
     @DeleteMapping("/book/{bookId}/category/{categoryId}")
-    public void unlinkCategory(@PathVariable("bookId") String bookId, @PathVariable("categoryId") String categoryId) {
-        bookService.findById(bookId).subscribe(i -> bookService.removeBookCategory(i, categoryId));
+    public Mono<Book> unlinkCategory(@PathVariable("bookId") String bookId, @PathVariable("categoryId") String categoryId) {
+        return bookService.findById(bookId).flatMap(i -> bookService.removeBookCategory(i, categoryId));
     }
 
     @PutMapping("/book/{bookId}/category")
-    public void linkCategory(
+    public Mono<Book> linkCategory(
             @PathVariable("bookId") String bookId,
             Category category
     ) {
-        bookService.findById(bookId).subscribe(i -> bookService.setBookCategory(i, category));
+        return bookService.findById(bookId).flatMap(i -> bookService.setBookCategory(i, category));
     }
 }

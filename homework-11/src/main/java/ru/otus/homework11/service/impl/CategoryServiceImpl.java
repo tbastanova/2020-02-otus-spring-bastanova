@@ -27,14 +27,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category save(Category category) {
-        categoryRepository.save(category).subscribe();
-        return category;
+    public Mono<Category> save(Category category) {
+        return categoryRepository.save(category);
     }
 
     @Transactional
-    public void deleteById(String id) {
-        categoryRepository.deleteById(id);
+    public Mono<Void> deleteById(String id) {
+        return categoryRepository.deleteById(id);
     }
 
     @Override

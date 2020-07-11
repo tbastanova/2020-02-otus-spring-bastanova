@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.homework11.model.Category;
 import ru.otus.homework11.service.CategoryService;
 
@@ -22,9 +23,9 @@ public class CategoryRestController {
     }
 
     @PostMapping("/category")
-    public void insertCategory(
+    public Mono<Category> insertCategory(
             Category category
     ) {
-        categoryService.save(category);
+        return categoryService.save(category);
     }
 }

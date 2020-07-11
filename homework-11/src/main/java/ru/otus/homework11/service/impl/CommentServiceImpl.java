@@ -29,9 +29,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment save(Comment comment) {
-        commentRepository.save(comment).subscribe();
-        return comment;
+    public Mono<Comment> save(Comment comment) {
+        return commentRepository.save(comment);
     }
 
     @Override
@@ -40,15 +39,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public Comment addBookComment(Book book, Comment comment) {
+    public Mono<Comment> addBookComment(Book book, Comment comment) {
         comment.setBook(book);
-        commentRepository.save(comment).subscribe();
-        return comment;
+        return commentRepository.save(comment);
     }
 
     @Override
     @Transactional
-    public void deleteById(String id) {
-        commentRepository.deleteById(id).subscribe();
+    public Mono<Void> deleteById(String id) {
+        return commentRepository.deleteById(id);
     }
 }

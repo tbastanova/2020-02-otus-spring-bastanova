@@ -10,11 +10,11 @@ public interface CommentService {
 
     Mono<Comment> findById(String id);
 
-    Comment save(Comment comment);
+    Mono<Comment> save(Comment comment);
 
     Flux<Comment> findByBook_Id(String bookId);
 
-    Comment addBookComment(Book book, Comment comment);
+    Mono<Comment> addBookComment(Book book, Comment comment);
 
-    void deleteById(String id);
+    Mono<Void> deleteById(String id);
 }

@@ -9,9 +9,9 @@ public interface AuthorService {
 
     Mono<Author> findById(String id);
 
-    Author save(Author author);
+    Mono<Author> save(Author author);
 
-    void deleteById(String bookId);
+    Mono<Void> deleteById(String bookId);
 
     Mono<Long> count();
 

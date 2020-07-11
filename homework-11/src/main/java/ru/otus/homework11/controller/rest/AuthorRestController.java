@@ -1,9 +1,8 @@
 package ru.otus.homework11.controller.rest;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.homework11.model.Author;
 import ru.otus.homework11.service.AuthorService;
 
@@ -22,9 +21,9 @@ public class AuthorRestController {
     }
 
     @PostMapping("/author")
-    public void insertAuthor(
+    public Mono<Author> insertAuthor(
             Author author
     ) {
-        authorService.save(author);
+        return authorService.save(author);
     }
 }

@@ -9,9 +9,9 @@ public interface CategoryService {
 
     Mono<Category> findById(String id);
 
-    Category save(Category category);
+    Mono<Category> save(Category category);
 
-    void deleteById(String bookId);
+    Mono<Void> deleteById(String bookId);
 
     Mono<Long> count();
 

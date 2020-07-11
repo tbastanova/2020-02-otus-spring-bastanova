@@ -2,6 +2,7 @@ package ru.otus.homework11.controller.rest;
 
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.homework11.model.Comment;
 import ru.otus.homework11.service.BookService;
 import ru.otus.homework11.service.CommentService;
@@ -23,15 +24,15 @@ public class CommentRestController {
     }
 
     @PostMapping("/book/{bookId}/comment")
-    public void insertComment(
+    public Mono<Comment> insertComment(
             @PathVariable("bookId") String bookId,
             Comment comment
     ) {
-        bookService.findById(bookId).subscribe(i -> commentService.addBookComment(i, comment));
+        return bookService.findById(bookId).flatMap(i -> commentService.addBookComment(i, comment));
     }
 
     @DeleteMapping("/comment/{id}")
-    public void deleteComment(@PathVariable("id") String id) {
-        commentService.deleteById(id);
+    public Mono<Void> deleteComment(@PathVariable("id") String id) {
+        return commentService.deleteById(id);
     }
 }

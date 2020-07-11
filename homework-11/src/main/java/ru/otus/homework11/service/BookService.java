@@ -13,19 +13,19 @@ public interface BookService {
 
     Mono<Book> findById(String id);
 
-    Book save(Book book);
+    Mono<Book> save(Book book);
 
-    void deleteById(String bookId);
+    Mono<Void> deleteById(String bookId);
 
     Mono<Long> count();
 
     Mono<Boolean> existsById(String id);
 
-    Book setBookAuthor(Book book, Author author);
+    Mono<Book> setBookAuthor(Book book, Author author);
 
-    Book removeBookAuthor(Book book, String authorId);
+    Mono<Book> removeBookAuthor(Book book, String authorId);
 
-    Book setBookCategory(Book book, Category category);
+    Mono<Book> setBookCategory(Book book, Category category);
 
-    Book removeBookCategory(Book book, String categoryId);
+    Mono<Book> removeBookCategory(Book book, String categoryId);
 }

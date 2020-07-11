@@ -29,14 +29,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author save(Author author) {
-        authorRepository.save(author).subscribe();
-        return author;
+    public Mono<Author> save(Author author) {
+        return authorRepository.save(author);
     }
 
     @Transactional
-    public void deleteById(String id) {
-        authorRepository.deleteById(id);
+    public Mono<Void> deleteById(String id) {
+        return authorRepository.deleteById(id);
     }
 
     @Override
