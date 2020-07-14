@@ -8,7 +8,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - WAIT_FOR=mongodb:27017
+      - WAIT_FOR=mongodb:27018
     networks:
       - nw
   mongodb:
@@ -17,7 +17,7 @@ services:
       volumes:
         - ./data/db:/data/db
       ports:
-        - 27017:27017
+        - 27018:27017
       networks:
         - nw
 networks:
