@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>-->
+    <meta name="teamId" th:content="${teamId}"/>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            width: 20%;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        input {
+            width: 10px;
+        }
+    </style>
+</head>
+
+<a th:href="@{/myProfile(userId=${userId})}" href="myProfile.html">Вернутьcя к профилю</a>
+<br>
+<h2>Команда</h2>
+<table>
+    <thead>
+    <tr id="teamUsersHead">
+        <th>Продукт</th>
+    </tr>
+
+    </thead>
+    <tbody id="productsTable" style="position: sticky">
+    </tbody>
+</table>
+
+<script>
+    function setColor(selector, vote) {
+        var bcgrColor = selector.css("background-color");
+        var txtColor = selector.css("color");
+        switch (vote) {
+            case "0":
+                bcgrColor = "#404040";
+                txtColor = "#ffffff";
+                break;
+            case "1":
+                bcgrColor = "#BC8F8F";
+                txtColor = "#000000";
+                break;
+            case "2":
+                bcgrColor = "#F0E68C";
+                txtColor = "#000000";
+                break;
+            case "3":
+                bcgrColor = "#9ACD32";
+                txtColor = "#000000";
+                break;
+        }
+        selector.css("background", bcgrColor);
+        selector.css("color", txtColor);
+    }
+
+    $(document).ready(function () {
+        var teamId = $("meta[name=teamId]").attr("content");
+
+        $.get('/team/' + teamId).done(function (team) {
+            $('h2').append(`
+                    ${team.name}
+                `)
+        });
+
+        $.get('/products').done(function (products) {
+            products.forEach(function (product) {
+                $('#productsTable').append(`
+                    <tr id="productLine${product.id}">
+                        <td id="td0${product.id}"><b>${product.name}</b></td>
+                    </tr>
+                `)
+            });
+
+            $.get('/team/' + teamId + '/users').done(function (users) {
+                users.forEach(function (user) {
+                    $('#teamUsersHead').append(`
+                    <th>${user.shortName}</th>
+               `);
+
+                    products.forEach(function (product) {
+                        $('#productLine' + product.id).append(`
+                        <td id="td${user.id}${product.id}"></td>
+                   `);
+                    });
+
+                    $.get('/user/' + user.id + '/products').done(function (userProducts) {
+                        userProducts.forEach(function (userProduct) {
+                            var selector = $('#td' + userProduct.user_id + userProduct.product_id);
+                            selector.append(`
+                            ${userProduct.vote}
+                        `);
+                            setColor(selector, userProduct.vote.toString());
+                        });
+                    });
+                });
+
+                $('#teamUsersHead').append(`
+                <th style="border-left-width: thick; border-color: #dddddd">Результат</th>
+            `);
+                products.forEach(function (product) {
+                    $('#productLine' + product.id).append(`
+                    <td id="tdr${product.id}" style="border-left-width: thick; border-color: #dddddd"></td>
+                `);
+                });
+
+                $.get('/teamProductResult/' + teamId).done(function (productResults) {
+                    productResults.forEach(function (productResult) {
+                        var selector = $('#tdr' + productResult.productId);
+                        selector.append(`
+                            <b>${productResult.calcResult}</b>
+                        `);
+                        setColor(selector, productResult.calcResult.toString());
+                    });
+                });
+            });
+        });
+    });
+
+
+</script>
+
+</html>
