@@ -35,20 +35,4 @@ public class TeamServiceImpl implements TeamService {
         List<Team> teams = teamRepositoryJpa.findByUsers(user);
         return teams;
     }
-
-    @Override
-    public long count() {
-        return teamRepositoryJpa.count();
-    }
-
-    @Override
-    public List<ProductResult> getProductAvgByTeamId(long teamId) {
-        return teamRepositoryJpa.getProductAvgByTeamId(teamId);
-    }
-
-    @Override
-    public List<ProductResult> getFilteredProductAvgByTeamId(long teamId, long minResult) {
-        List<ProductResult> results = teamRepositoryJpa.getProductAvgByTeamId(teamId);
-        return results.stream().filter(avg->avg.getCalcResult()>=minResult).collect(Collectors.toList());
-    }
 }

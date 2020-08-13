@@ -8,10 +8,14 @@ import java.sql.SQLException;
 
 public class ProductResultMapper implements RowMapper<ProductResult> {
     public ProductResult mapRow(ResultSet resultSet, int i) throws SQLException {
-        long id = resultSet.getLong("productId");
         long result = resultSet.getLong("result");
         long min = resultSet.getLong("min");
-        ProductResult productResult = new ProductResult(id, result, min, (min > 0 ? result : 0));
+        ProductResult productResult = new ProductResult(resultSet.getLong("productId"),
+                resultSet.getString("productName"),
+                resultSet.getLong("categoryId"),
+                result,
+                min,
+                (min > 0 ? result : 0));
         return productResult;
     }
 }

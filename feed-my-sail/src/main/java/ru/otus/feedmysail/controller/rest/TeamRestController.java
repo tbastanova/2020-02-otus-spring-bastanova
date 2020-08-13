@@ -19,7 +19,6 @@ public class TeamRestController {
         this.teamService = teamService;
     }
 
-
     @GetMapping("/user/{userId}/teams")
     public List<TeamDto> getUserTeams(@PathVariable("userId") long userId) {
         return teamService.findByUserId(userId).stream().map(TeamDto::toDto)
@@ -31,22 +30,4 @@ public class TeamRestController {
         return TeamDto.toDto(teamService.findById(id));
     }
 
-    @GetMapping("/count")
-    public long getTeamCount() {
-        return teamService.count();
-    }
-
-    @GetMapping("/teamProductResult/{teamId}")
-    public List<ProductResultDto> getTeamProductResult(@PathVariable("teamId") long teamId) {
-        return teamService.getProductAvgByTeamId(teamId).stream().map(ProductResultDto::toDto)
-                .collect(Collectors.toList());
-//        return teamService.getProductAvgByTeamId(teamId);
-
-    }
-
-    @GetMapping("/teamFilteredProductResult/{teamId}")
-    public List<ProductResultDto> getFilteredProductResult(@PathVariable("teamId") long teamId) {
-        return teamService.getFilteredProductAvgByTeamId(teamId,2).stream().map(ProductResultDto::toDto)
-                .collect(Collectors.toList());
-    }
 }

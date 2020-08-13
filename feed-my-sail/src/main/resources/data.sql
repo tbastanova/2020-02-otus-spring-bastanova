@@ -22,8 +22,8 @@ insert into user(id,username,password,last_name,first_name,middle_name)
 
 insert into team(id,name,skipper_id)
     values (1,'Беда_15.09.2020',1),
-           (2,'Алые паруса_15.09.2020', 2),
-           (3,'Черная жемчужина_15.09.2020',3);
+           (2,'Алые паруса_22.09.2020', 2),
+           (3,'Черная жемчужина_29.09.2020',3);
 
 insert into user_team(user_id,team_id)
     values  (1,1), (1,2), (1,3),

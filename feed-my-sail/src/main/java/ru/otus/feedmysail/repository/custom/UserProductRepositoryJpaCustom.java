@@ -4,7 +4,7 @@ import ru.otus.feedmysail.model.ProductResult;
 
 import java.util.List;
 
-public interface TeamRepositoryJpaCustom {
+public interface UserProductRepositoryJpaCustom {
     List<ProductResult> getProductAvgByTeamId(long teamId);
 
 //    long count();

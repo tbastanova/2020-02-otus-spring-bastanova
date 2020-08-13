@@ -2,6 +2,7 @@ package ru.otus.feedmysail.controller.rest;
 
 import org.springframework.web.bind.annotation.*;
 import ru.otus.feedmysail.controller.rest.dto.ProductDto;
+import ru.otus.feedmysail.controller.rest.dto.ProductResultDto;
 import ru.otus.feedmysail.controller.rest.dto.UserProductDto;
 import ru.otus.feedmysail.model.Product;
 import ru.otus.feedmysail.model.UserProduct;
@@ -47,7 +48,18 @@ public class ProductRestController {
             long productId,
             Integer vote
     ) {
-//        System.out.println("userId="+userId + "  productId="+productId+ " vote="+vote);
         userProductService.save(new UserProduct(0, userId, productId, vote));
+    }
+
+    @GetMapping("/teamProductResult/{teamId}")
+    public List<ProductResultDto> getTeamProductResult(@PathVariable("teamId") long teamId) {
+        return userProductService.getProductAvgByTeamId(teamId).stream().map(ProductResultDto::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/teamFilteredProductResult/{teamId}")
+    public List<ProductResultDto> getFilteredProductResult(@PathVariable("teamId") long teamId) {
+        return userProductService.getFilteredProductAvgByTeamId(teamId,2).stream().map(ProductResultDto::toDto)
+                .collect(Collectors.toList());
     }
 }

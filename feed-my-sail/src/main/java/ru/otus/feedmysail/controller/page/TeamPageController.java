@@ -20,8 +20,14 @@ public class TeamPageController {
     @GetMapping("/myTeam/{id}")
     public String teamPage(@PathVariable long id, Model model) {
         model.addAttribute("userId", userDetailsService.getUserId());
-//        model.addAttribute("userFullName", userDetailsService.getUserFullName());
         model.addAttribute("teamId", id);
         return "myTeam";
+    }
+
+    @GetMapping("/teamProductList/{id}")
+    public String teamProductList(@PathVariable long id, Model model) {
+        model.addAttribute("userId", userDetailsService.getUserId());
+        model.addAttribute("teamId", id);
+        return "teamProductList";
     }
 }

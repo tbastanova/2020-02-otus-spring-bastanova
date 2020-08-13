@@ -10,10 +10,4 @@ public interface TeamService {
     Team findById(long id);
 
     List<Team> findByUserId(long userId);
-
-    long count();
-
-    List<ProductResult> getProductAvgByTeamId(long teamId);
-
-    List<ProductResult> getFilteredProductAvgByTeamId(long teamId, long avgMin);
 }

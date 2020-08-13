@@ -1,5 +1,6 @@
 package ru.otus.feedmysail.service;
 
+import ru.otus.feedmysail.model.ProductResult;
 import ru.otus.feedmysail.model.UserProduct;
 
 import java.util.List;
@@ -14,5 +15,9 @@ public interface UserProductService {
     Optional<UserProduct> findByUserIdAndProductId(long userId, long productId);
 
     UserProduct save(UserProduct userProduct);
+
+    List<ProductResult> getProductAvgByTeamId(long teamId);
+
+    List<ProductResult> getFilteredProductAvgByTeamId(long teamId, long avgMin);
 
 }

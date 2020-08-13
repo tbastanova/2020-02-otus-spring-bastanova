@@ -4,6 +4,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import ru.otus.feedmysail.exception.NoCategoryFoundException;
 import ru.otus.feedmysail.exception.NoProductFoundException;
 import ru.otus.feedmysail.exception.NoTeamFoundException;
 import ru.otus.feedmysail.exception.NoUserFoundException;
@@ -21,6 +22,13 @@ public class AdviceController {
     public ModelAndView handleNoAuthorFoundException(NoProductFoundException e) {
         ModelAndView modelAndView = new ModelAndView("error");
         modelAndView.addObject("message", "Продукт не найден");
+        return modelAndView;
+    }
+
+    @ExceptionHandler(NoCategoryFoundException.class)
+    public ModelAndView handleNoCategoryFoundException(NoCategoryFoundException e) {
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("message", "Категория не найдена");
         return modelAndView;
     }
 
