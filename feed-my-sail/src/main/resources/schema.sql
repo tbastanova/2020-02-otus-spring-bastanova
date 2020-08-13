@@ -1,11 +1,23 @@
 create table user(
     id bigserial,
     username varchar (255),
---     password varchar (255),
+    password varchar (255),
     last_name varchar (255),
     first_name varchar (255),
     middle_name varchar (255),
     primary key (id)
+    );
+
+create table role(
+    id bigserial,
+    name varchar (255),
+    primary key (id)
+    );
+
+create table user_role(
+    user_id bigint references user(id) on delete cascade,
+    role_id bigint references role(id) on delete cascade,
+    primary key (user_id,role_id)
     );
 
 create table category(

@@ -11,6 +11,7 @@ import ru.otus.feedmysail.repository.UserRepositoryJpa;
 import ru.otus.feedmysail.service.TeamService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -43,5 +44,11 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public List<ProductResult> getProductAvgByTeamId(long teamId) {
         return teamRepositoryJpa.getProductAvgByTeamId(teamId);
+    }
+
+    @Override
+    public List<ProductResult> getFilteredProductAvgByTeamId(long teamId, long minResult) {
+        List<ProductResult> results = teamRepositoryJpa.getProductAvgByTeamId(teamId);
+        return results.stream().filter(avg->avg.getCalcResult()>=minResult).collect(Collectors.toList());
     }
 }

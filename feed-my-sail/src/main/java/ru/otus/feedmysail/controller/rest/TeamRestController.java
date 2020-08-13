@@ -44,4 +44,9 @@ public class TeamRestController {
 
     }
 
+    @GetMapping("/teamFilteredProductResult/{teamId}")
+    public List<ProductResultDto> getFilteredProductResult(@PathVariable("teamId") long teamId) {
+        return teamService.getFilteredProductAvgByTeamId(teamId,2).stream().map(ProductResultDto::toDto)
+                .collect(Collectors.toList());
+    }
 }

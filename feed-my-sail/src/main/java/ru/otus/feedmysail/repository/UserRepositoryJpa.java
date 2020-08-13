@@ -14,4 +14,6 @@ public interface UserRepositoryJpa extends CrudRepository<AppUser, Long> {
     Optional<AppUser> findById(long id);
 
     List<AppUser> findByTeams(Team team);
+
+    Optional<AppUser> findByUserName(String userName);
 }

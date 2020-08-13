@@ -15,10 +15,10 @@ insert into product(name,category_id)
             ('Кола',11), ('Швепс',11),
             ('Орехи',12), ('Чипсы',12), ('Печенье',12), ('Шоколад',12);
 
-insert into user(id,username,last_name,first_name,middle_name)
-    values (1,'vrungel','Врунгель','Христофор','Бонифатьевич'),
-           (2,'grei','Грей','Артур',null),
-           (3,'jack','Воробей','Джек',null);
+insert into user(id,username,password,last_name,first_name,middle_name)
+    values (1,'vrungel','123456','Врунгель','Христофор','Бонифатьевич'),
+           (2,'grei','123456','Грей','Артур',null),
+           (3,'jack','123456','Воробей','Джек',null);
 
 insert into team(id,name,skipper_id)
     values (1,'Беда_15.09.2020',1),

@@ -14,4 +14,6 @@ public interface TeamService {
     long count();
 
     List<ProductResult> getProductAvgByTeamId(long teamId);
+
+    List<ProductResult> getFilteredProductAvgByTeamId(long teamId, long avgMin);
 }

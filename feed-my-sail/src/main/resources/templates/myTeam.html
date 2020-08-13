@@ -4,6 +4,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!--    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>-->
     <meta name="teamId" th:content="${teamId}"/>
+    <meta name="userId" th:content="${userId}"/>
+<!--    <meta name="userFullName" th:content="${userFullName}"/>-->
     <style>
         table {
             font-family: arial, sans-serif;
@@ -28,9 +30,10 @@
     </style>
 </head>
 
+<h2 id="userFullName">Текущий пользователь: </h2>
 <a th:href="@{/myProfile(userId=${userId})}" href="myProfile.html">Вернутьcя к профилю</a>
 <br>
-<h2>Команда</h2>
+<h2 id="teamName">Команда</h2>
 <table>
     <thead>
     <tr id="teamUsersHead">
@@ -70,9 +73,15 @@
 
     $(document).ready(function () {
         var teamId = $("meta[name=teamId]").attr("content");
+        var userId = $("meta[name=userId]").attr("content");
+        // var userFullName = $("meta[name=userFullName]").attr("content");
+
+        $.get('/user/' + userId ).done(function (user) {
+            $('#userFullName').append(user.fullName)});
+
 
         $.get('/team/' + teamId).done(function (team) {
-            $('h2').append(`
+            $('#teamName').append(`
                     ${team.name}
                 `)
         });

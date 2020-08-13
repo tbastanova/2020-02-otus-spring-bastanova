@@ -3,6 +3,7 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="userId" th:content="${userId}"/>
+<!--    <meta name="userFullName" th:content="${userFullName}"/>-->
     <style>
         table {
             font-family: arial, sans-serif;
@@ -27,6 +28,7 @@
     </style>
 </head>
 
+<h2 id="userFullName">Текущий пользователь: </h2>
 <a th:href="@{/myProfile(userId=${userId})}" href="myProfile.html">Вернутьcя к профилю</a>
 <br>
 <br>
@@ -70,9 +72,9 @@
         selector.css("color", txtColor);
     }
 
-    function check(productId, vote) {
+    function check(userId, productId, vote) {
         $.ajax({
-            url: '/user/1/product',
+            url: '/user/'+userId+'/product',
             type: 'PUT',
             data: {
                 productId: productId,
@@ -86,15 +88,20 @@
 
     $(document).ready(function () {
         var userId = $("meta[name=userId]").attr("content");
+        // var userFullName = $("meta[name=userFullName]").attr("content");
+
+        $.get('/user/' + userId ).done(function (user) {
+            $('#userFullName').append(user.fullName)});
+
         $.get('/products').done(function (products) {
             products.forEach(function (product) {
                 $('#productsTable').append(`
                     <tr id="productLine${product.id}">
                         <td><b>${product.name}</b></td>
-                        <td><input name="productVote${product.id}" type="radio" value="0" onclick="check(${product.id},this.value)"></td>
-                        <td><input name="productVote${product.id}" type="radio" value="1" onclick="check(${product.id},this.value)"></td>
-                        <td><input name="productVote${product.id}" type="radio" value="2" onclick="check(${product.id},this.value)"></td>
-                        <td><input name="productVote${product.id}" type="radio" value="3" onclick="check(${product.id},this.value)"></td>
+                        <td><input name="productVote${product.id}" type="radio" value="0" onclick="check(${userId},${product.id},this.value)"></td>
+                        <td><input name="productVote${product.id}" type="radio" value="1" onclick="check(${userId},${product.id},this.value)"></td>
+                        <td><input name="productVote${product.id}" type="radio" value="2" onclick="check(${userId},${product.id},this.value)"></td>
+                        <td><input name="productVote${product.id}" type="radio" value="3" onclick="check(${userId},${product.id},this.value)"></td>
                     </tr>
                 `)
             });

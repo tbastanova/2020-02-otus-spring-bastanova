@@ -3,22 +3,20 @@ package ru.otus.feedmysail.controller.page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
-import javax.servlet.http.HttpSession;
+import ru.otus.feedmysail.service.impl.UserDetailsServiceImpl;
 
 @Controller
-@SessionAttributes("userId")
 public class ProductPageController {
-    private final HttpSession session;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    public ProductPageController(HttpSession session) {
-        this.session = session;
+    public ProductPageController(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @GetMapping("/voteProduct")
     public String listProduct(Model model) {
-        model.addAttribute("userId", 1);
+        model.addAttribute("userId", userDetailsService.getUserId());
+//        model.addAttribute("userFullName", userDetailsService.getUserFullName());
         return "voteProduct";
     }
 

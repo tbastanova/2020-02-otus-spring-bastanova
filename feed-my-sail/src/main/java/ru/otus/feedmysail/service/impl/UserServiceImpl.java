@@ -1,5 +1,6 @@
 package ru.otus.feedmysail.service.impl;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.otus.feedmysail.exception.NoTeamFoundException;
 import ru.otus.feedmysail.exception.NoUserFoundException;
@@ -38,5 +39,10 @@ public class UserServiceImpl implements UserService {
         Team team = teamRepositoryJpa.findById(teamId).orElseThrow(() -> new NoTeamFoundException(new Throwable()));
         List<AppUser> users = userRepositoryJpa.findByTeams(team);
         return users;
+    }
+
+    @Override
+    public AppUser findByUserName(String userName) {
+        return userRepositoryJpa.findByUserName(userName).orElseThrow(() -> new UsernameNotFoundException(userName));
     }
 }
