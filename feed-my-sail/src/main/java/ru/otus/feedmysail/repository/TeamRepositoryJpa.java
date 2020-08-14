@@ -3,7 +3,6 @@ package ru.otus.feedmysail.repository;
 import org.springframework.data.repository.CrudRepository;
 import ru.otus.feedmysail.model.AppUser;
 import ru.otus.feedmysail.model.Team;
-import ru.otus.feedmysail.repository.custom.UserProductRepositoryJpaCustom;
 
 import java.util.List;
 import java.util.Optional;

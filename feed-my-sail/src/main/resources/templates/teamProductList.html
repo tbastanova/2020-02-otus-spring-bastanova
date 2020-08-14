@@ -2,51 +2,38 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!--    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>-->
     <meta name="teamId" th:content="${teamId}"/>
     <meta name="userId" th:content="${userId}"/>
-<!--    <meta name="userFullName" th:content="${userFullName}"/>-->
     <style>
         table {
             font-family: arial, sans-serif;
             border-collapse: collapse;
-            width: 100%;
+            float: left;
+            margin-right: 10px;
+            margin-top: 0%;
+            top: 0;
+            valign: top;
         }
 
         td, th {
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
-            width: 20%;
-        }
-
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-
-        input {
-            width: 10px;
         }
     </style>
 </head>
 
-<!--<h2 id="userFullName">Текущий пользователь: </h2>-->
 <a th:href="@{/myProfile(userId=${userId})}" href="myProfile.html">Вернутьcя к профилю</a>
 <br>
 <h2 id="teamName">Команда</h2>
-<table id="teamCategoriesHead">
-</table>
+<p id="teamCategoriesHead">
+</p>
 
 <script>
 
     $(document).ready(function () {
         var teamId = $("meta[name=teamId]").attr("content");
         var userId = $("meta[name=userId]").attr("content");
-
-
-        // $.get('/user/' + userId ).done(function (user) {
-        //     $('#userFullName').append(user.fullName)});
-
 
         $.get('/team/' + teamId).done(function (team) {
             $('#teamName').append(`
@@ -55,30 +42,27 @@
         });
 
         $.get('/categories').done(function (categories) {
-                categories.forEach(function (category) {
-                    $('#teamCategoriesHead').append(`
-                        <td>
-                            <table id="tbl${category.id}">
-                                <thead><tr id="th${category.id}"><th><b>${category.name}</b></tr></th>
+            categories.forEach(function (category) {
+                $('#teamCategoriesHead').append(`
+                            <table id="tbl${category.id}" style="display: none;">
+                                <thead><tr id="th${category.id}" style="background-color: #dddddd"><th><b>${category.name}</b></tr></th>
                                 </thead>
                                 <tbody id="tb${category.id}">
                                 </tbody>
                             </table>
-                        </td>
                    `);
-                });
             });
 
-        $.get('/teamFilteredProductResult/' + teamId).done(function (productResults) {
-            productResults.forEach(function (productResult) {
-                $('#tb'+productResult.categoryId).append(`
+            $.get('/teamFilteredProductResult/' + teamId).done(function (productResults) {
+                productResults.forEach(function (productResult) {
+                    $('#tbl' + productResult.categoryId).show();
+                    $('#tb' + productResult.categoryId).append(`
                     <tr>
                         <td id="td${productResult.categoryId}${productResult.productId}">${productResult.productName}</td>
                     </tr>
                 `);
-
+                });
             });
-
         });
     });
 

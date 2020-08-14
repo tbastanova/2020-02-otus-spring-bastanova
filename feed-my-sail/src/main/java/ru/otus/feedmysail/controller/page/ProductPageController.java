@@ -16,7 +16,6 @@ public class ProductPageController {
     @GetMapping("/voteProduct")
     public String listProduct(Model model) {
         model.addAttribute("userId", userDetailsService.getUserId());
-//        model.addAttribute("userFullName", userDetailsService.getUserFullName());
         return "voteProduct";
     }
 

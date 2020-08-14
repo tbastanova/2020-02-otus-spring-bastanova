@@ -3,7 +3,6 @@ package ru.otus.feedmysail.controller.rest.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.otus.feedmysail.model.Category;
-import ru.otus.feedmysail.model.Product;
 
 @Data
 @AllArgsConstructor

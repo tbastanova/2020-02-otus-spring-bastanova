@@ -11,12 +11,10 @@ public class UserProductDto {
     private long user_id = -1;
     private long product_id = -1;
     private Integer vote;
-    //    private String product_name;
 
     public static UserProductDto toDto(UserProduct userProduct) {
         return new UserProductDto(userProduct.getId(), userProduct.getUserId(), userProduct.getProductId()
                 , userProduct.getVote()
-//                , userProduct.getProduct().getName()
         );
     }
 

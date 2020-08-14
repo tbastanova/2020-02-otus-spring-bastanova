@@ -3,7 +3,6 @@ package ru.otus.feedmysail.controller.rest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.feedmysail.controller.rest.dto.TeamDto;
 import ru.otus.feedmysail.controller.rest.dto.UserDto;
 import ru.otus.feedmysail.service.UserService;
 

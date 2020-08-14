@@ -1,6 +1,5 @@
 package ru.otus.feedmysail.service;
 
-import ru.otus.feedmysail.model.ProductResult;
 import ru.otus.feedmysail.model.Team;
 
 import java.util.List;

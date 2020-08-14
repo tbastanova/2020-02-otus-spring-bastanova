@@ -24,11 +24,4 @@ public class UserProduct {
 
     @Column(name = "vote", nullable = false)
     private Integer vote;
-
-//    @OneToOne(targetEntity = AppUser.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
-//    private Product product;
-
-//    public UserProduct(long userId, long productId, Integer vote) {
-//    }
 }

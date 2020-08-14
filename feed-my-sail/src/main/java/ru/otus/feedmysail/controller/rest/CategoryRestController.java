@@ -1,10 +1,8 @@
 package ru.otus.feedmysail.controller.rest;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.otus.feedmysail.controller.rest.dto.CategoryDto;
-import ru.otus.feedmysail.controller.rest.dto.ProductDto;
-import ru.otus.feedmysail.model.Category;
-import ru.otus.feedmysail.model.Product;
 import ru.otus.feedmysail.service.CategoryService;
 
 import java.util.List;

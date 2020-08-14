@@ -3,7 +3,6 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="userId" th:content="${userId}"/>
-<!--    <meta name="userFullName" th:content="${userFullName}"/>-->
     <style>
         a {
             font-size: large;
@@ -27,22 +26,30 @@
 
     $(document).ready(function () {
         var userId = $("meta[name=userId]").attr("content");
-        // var userFullName = $("meta[name=userFullName]").attr("content");
 
-        $.get('/user/' + userId ).done(function (user) {
-            $('#userFullName').append(user.fullName)});
+        $.get('/user/' + userId).done(function (user) {
+            $('#userFullName').append(user.fullName)
+        });
 
         $.get('/user/' + userId + '/teams').done(function (teams) {
             teams.forEach(function (team) {
                 $('#teamsList').append(`
                     <a href="/myTeam/${team.id}">${team.name}</a>
+<!--                    Почему-то просто location.href не работает-->
+<!--                    <button onclick="location.href='/teamProductList/${team.id}'">Итоговый список продуктов</button>-->
+                    <button onclick="$.ajax({
+                                        url: '/',
+                                        type: 'GET',
+                                        success: function(result) {
+                                               location.href='/teamProductList/${team.id}'
+                                        }
+                                });"
+                    >Итоговый список продуктов</button>
                     <br><br>
-                `)
+                `);
             });
         });
-    });
-
-
+    })
+        ;
 </script>
-</body>
 </html>

@@ -4,14 +4,12 @@ import org.springframework.stereotype.Service;
 import ru.otus.feedmysail.exception.NoTeamFoundException;
 import ru.otus.feedmysail.exception.NoUserFoundException;
 import ru.otus.feedmysail.model.AppUser;
-import ru.otus.feedmysail.model.ProductResult;
 import ru.otus.feedmysail.model.Team;
 import ru.otus.feedmysail.repository.TeamRepositoryJpa;
 import ru.otus.feedmysail.repository.UserRepositoryJpa;
 import ru.otus.feedmysail.service.TeamService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TeamServiceImpl implements TeamService {

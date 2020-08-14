@@ -48,6 +48,6 @@ public class UserProductServiceImpl implements UserProductService {
     @Override
     public List<ProductResult> getFilteredProductAvgByTeamId(long teamId, long minResult) {
         List<ProductResult> results = userProductRepositoryJpa.getProductAvgByTeamId(teamId);
-        return results.stream().filter(avg->avg.getCalcResult()>=minResult).collect(Collectors.toList());
+        return results.stream().filter(avg -> avg.getCalcResult() >= minResult).collect(Collectors.toList());
     }
 }

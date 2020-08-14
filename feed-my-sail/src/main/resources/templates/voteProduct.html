@@ -3,7 +3,6 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="userId" th:content="${userId}"/>
-<!--    <meta name="userFullName" th:content="${userFullName}"/>-->
     <style>
         table {
             font-family: arial, sans-serif;
@@ -74,7 +73,7 @@
 
     function check(userId, productId, vote) {
         $.ajax({
-            url: '/user/'+userId+'/product',
+            url: '/user/' + userId + '/product',
             type: 'PUT',
             data: {
                 productId: productId,
@@ -88,10 +87,10 @@
 
     $(document).ready(function () {
         var userId = $("meta[name=userId]").attr("content");
-        // var userFullName = $("meta[name=userFullName]").attr("content");
 
-        $.get('/user/' + userId ).done(function (user) {
-            $('#userFullName').append(user.fullName)});
+        $.get('/user/' + userId).done(function (user) {
+            $('#userFullName').append(user.fullName)
+        });
 
         $.get('/products').done(function (products) {
             products.forEach(function (product) {
