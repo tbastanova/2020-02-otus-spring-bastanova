@@ -86,7 +86,7 @@
                 `)
         });
 
-        $.get('/products').done(function (products) {
+        $.get('/product').done(function (products) {
             products.forEach(function (product) {
                 $('#productsTable').append(`
                     <tr id="productLine${product.id}">
@@ -95,7 +95,7 @@
                 `)
             });
 
-            $.get('/team/' + teamId + '/users').done(function (users) {
+            $.get('/team/' + teamId + '/user').done(function (users) {
                 users.forEach(function (user) {
                     $('#teamUsersHead').append(`
                     <th>${user.shortName}</th>
@@ -107,7 +107,7 @@
                    `);
                     });
 
-                    $.get('/user/' + user.id + '/products').done(function (userProducts) {
+                    $.get('/user/' + user.id + '/product').done(function (userProducts) {
                         userProducts.forEach(function (userProduct) {
                             var selector = $('#td' + userProduct.user_id + userProduct.product_id);
                             selector.append(`

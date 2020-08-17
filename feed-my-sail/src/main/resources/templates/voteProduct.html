@@ -92,7 +92,7 @@
             $('#userFullName').append(user.fullName)
         });
 
-        $.get('/products').done(function (products) {
+        $.get('/product').done(function (products) {
             products.forEach(function (product) {
                 $('#productsTable').append(`
                     <tr id="productLine${product.id}">
@@ -104,7 +104,7 @@
                     </tr>
                 `)
             });
-            $.get('/user/' + userId + '/products').done(function (userProducts) {
+            $.get('/user/' + userId + '/product').done(function (userProducts) {
                 userProducts.forEach(function (userProduct) {
                     $("[name=productVote" + userProduct.product_id + "][value=" + userProduct.vote + "]").attr('checked', true);
                     setColor($('#productLine' + userProduct.product_id), userProduct.vote.toString());

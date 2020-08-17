@@ -6,8 +6,8 @@ import ru.otus.feedmysail.exception.NoTeamFoundException;
 import ru.otus.feedmysail.exception.NoUserFoundException;
 import ru.otus.feedmysail.model.AppUser;
 import ru.otus.feedmysail.model.Team;
-import ru.otus.feedmysail.repository.TeamRepositoryJpa;
-import ru.otus.feedmysail.repository.UserRepositoryJpa;
+import ru.otus.feedmysail.repository.TeamRepository;
+import ru.otus.feedmysail.repository.UserRepository;
 import ru.otus.feedmysail.service.UserService;
 
 import java.util.List;
@@ -15,34 +15,34 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepositoryJpa userRepositoryJpa;
-    private final TeamRepositoryJpa teamRepositoryJpa;
+    private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
 
-    public UserServiceImpl(UserRepositoryJpa userRepositoryJpa, TeamRepositoryJpa teamRepositoryJpa) {
-        this.userRepositoryJpa = userRepositoryJpa;
-        this.teamRepositoryJpa = teamRepositoryJpa;
+    public UserServiceImpl(UserRepository userRepository, TeamRepository teamRepository) {
+        this.userRepository = userRepository;
+        this.teamRepository = teamRepository;
     }
 
 
     @Override
     public List<AppUser> findAll() {
-        return userRepositoryJpa.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public AppUser findById(long id) {
-        return userRepositoryJpa.findById(id).orElseThrow(() -> new NoUserFoundException(new Throwable()));
+        return userRepository.findById(id).orElseThrow(() -> new NoUserFoundException(new Throwable()));
     }
 
     @Override
     public List<AppUser> findByTeamId(long teamId) {
-        Team team = teamRepositoryJpa.findById(teamId).orElseThrow(() -> new NoTeamFoundException(new Throwable()));
-        List<AppUser> users = userRepositoryJpa.findByTeams(team);
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new NoTeamFoundException(new Throwable()));
+        List<AppUser> users = userRepository.findByTeams(team);
         return users;
     }
 
     @Override
     public AppUser findByUserName(String userName) {
-        return userRepositoryJpa.findByUserName(userName).orElseThrow(() -> new UsernameNotFoundException(userName));
+        return userRepository.findByUserName(userName).orElseThrow(() -> new UsernameNotFoundException(userName));
     }
 }

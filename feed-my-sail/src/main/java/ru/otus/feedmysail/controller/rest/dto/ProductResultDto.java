@@ -17,9 +17,9 @@ public class ProductResultDto {
     private long calcResult;
 
     public static ProductResultDto toDto(ProductResult product) {
-        return new ProductResultDto(product.getProductId(),
-                product.getProductName(),
-                product.getCategoryId(),
+        return new ProductResultDto(product.getProduct().getId(),
+                product.getProduct().getName(),
+                product.getProduct().getCategory().getId(),
                 product.getResult(),
                 product.getMin(),
                 product.getCalcResult());

@@ -3,7 +3,7 @@ package ru.otus.feedmysail.service.impl;
 import org.springframework.stereotype.Service;
 import ru.otus.feedmysail.model.ProductResult;
 import ru.otus.feedmysail.model.UserProduct;
-import ru.otus.feedmysail.repository.UserProductRepositoryJpa;
+import ru.otus.feedmysail.repository.UserProductRepository;
 import ru.otus.feedmysail.service.UserProductService;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserProductServiceImpl implements UserProductService {
-    private final UserProductRepositoryJpa userProductRepositoryJpa;
+    private final UserProductRepository userProductRepositoryJpa;
 
-    public UserProductServiceImpl(UserProductRepositoryJpa userProductRepositoryJpa) {
+    public UserProductServiceImpl(UserProductRepository userProductRepositoryJpa) {
         this.userProductRepositoryJpa = userProductRepositoryJpa;
     }
 

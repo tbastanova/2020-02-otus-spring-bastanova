@@ -31,7 +31,7 @@
             $('#userFullName').append(user.fullName)
         });
 
-        $.get('/user/' + userId + '/teams').done(function (teams) {
+        $.get('/user/' + userId + '/team').done(function (teams) {
             teams.forEach(function (team) {
                 $('#teamsList').append(`
                     <a href="/myTeam/${team.id}">${team.name}</a>

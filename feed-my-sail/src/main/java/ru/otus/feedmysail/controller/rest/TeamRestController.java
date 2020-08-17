@@ -18,7 +18,7 @@ public class TeamRestController {
         this.teamService = teamService;
     }
 
-    @GetMapping("/user/{userId}/teams")
+    @GetMapping("/user/{userId}/team")
     public List<TeamDto> getUserTeams(@PathVariable("userId") long userId) {
         return teamService.findByUserId(userId).stream().map(TeamDto::toDto)
                 .collect(Collectors.toList());

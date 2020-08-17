@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.otus.feedmysail.model.AppUser;
 import ru.otus.feedmysail.model.Role;
@@ -26,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) {
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         AppUser user = userService.findByUserName(login);
         this.userId = user.getId();
 

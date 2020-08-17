@@ -17,7 +17,7 @@ public class CategoryRestController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/categories")
+    @GetMapping("/category")
     public List<CategoryDto> getAllCategories() {
         return categoryService.findAll().stream().map(CategoryDto::toDto)
                 .collect(Collectors.toList());

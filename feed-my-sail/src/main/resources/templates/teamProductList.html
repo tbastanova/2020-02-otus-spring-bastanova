@@ -41,7 +41,7 @@
                 `)
         });
 
-        $.get('/categories').done(function (categories) {
+        $.get('/category').done(function (categories) {
             categories.forEach(function (category) {
                 $('#teamCategoriesHead').append(`
                             <table id="tbl${category.id}" style="display: none;">

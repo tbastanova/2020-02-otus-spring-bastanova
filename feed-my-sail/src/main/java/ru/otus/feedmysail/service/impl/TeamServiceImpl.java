@@ -5,32 +5,32 @@ import ru.otus.feedmysail.exception.NoTeamFoundException;
 import ru.otus.feedmysail.exception.NoUserFoundException;
 import ru.otus.feedmysail.model.AppUser;
 import ru.otus.feedmysail.model.Team;
-import ru.otus.feedmysail.repository.TeamRepositoryJpa;
-import ru.otus.feedmysail.repository.UserRepositoryJpa;
+import ru.otus.feedmysail.repository.TeamRepository;
+import ru.otus.feedmysail.repository.UserRepository;
 import ru.otus.feedmysail.service.TeamService;
 
 import java.util.List;
 
 @Service
 public class TeamServiceImpl implements TeamService {
-    private final TeamRepositoryJpa teamRepositoryJpa;
-    private final UserRepositoryJpa userRepositoryJpa;
+    private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
 
-    public TeamServiceImpl(TeamRepositoryJpa teamRepositoryJpa, UserRepositoryJpa userRepositoryJpa) {
-        this.teamRepositoryJpa = teamRepositoryJpa;
-        this.userRepositoryJpa = userRepositoryJpa;
+    public TeamServiceImpl(TeamRepository teamRepository, UserRepository userRepository) {
+        this.teamRepository = teamRepository;
+        this.userRepository = userRepository;
     }
 
 
     @Override
     public Team findById(long id) {
-        return teamRepositoryJpa.findById(id).orElseThrow(() -> new NoTeamFoundException(new Throwable()));
+        return teamRepository.findById(id).orElseThrow(() -> new NoTeamFoundException(new Throwable()));
     }
 
     @Override
     public List<Team> findByUserId(long userId) {
-        AppUser user = userRepositoryJpa.findById(userId).orElseThrow(() -> new NoUserFoundException(new Throwable()));
-        List<Team> teams = teamRepositoryJpa.findByUsers(user);
+        AppUser user = userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException(new Throwable()));
+        List<Team> teams = teamRepository.findByUsers(user);
         return teams;
     }
 }
