@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="userId" th:content="${userId}"/>
+    <style>
+        a {
+            font-size: large;
+        }
+    </style>
+</head>
+
+<h2 id="userFullName">Текущий пользователь: </h2>
+<br>
+
+<h2>Съедобное/несъедобное:</h2>
+<form>
+    <a th:href="@{/voteProduct}" href="voteProduct.html">Проголосовать за продукты</a>
+</form>
+<br>
+<h2>Мои команды:</h2>
+<form id="teamsList">
+</form>
+
+<script>
+
+    $(document).ready(function () {
+        var userId = $("meta[name=userId]").attr("content");
+
+        $.get('/user/' + userId).done(function (user) {
+            $('#userFullName').append(user.fullName)
+        });
+
+        $.get('/user/' + userId + '/team').done(function (teams) {
+            teams.forEach(function (team) {
+                $('#teamsList').append(`
+                    <a href="/myTeam/${team.id}">${team.name}</a>
+<!--                    Почему-то просто location.href не работает-->
+<!--                    <button onclick="location.href='/teamProductList/${team.id}'">Итоговый список продуктов</button>-->
+                    <button onclick="$.ajax({
+                                        url: '/',
+                                        type: 'GET',
+                                        success: function(result) {
+                                               location.href='/teamProductList/${team.id}'
+                                        }
+                                });"
+                    >Итоговый список продуктов</button>
+                    <br><br>
+                `);
+            });
+        });
+    })
+        ;
+</script>
+</html>

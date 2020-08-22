@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="teamId" th:content="${teamId}"/>
+    <meta name="userId" th:content="${userId}"/>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            float: left;
+            margin-right: 10px;
+            margin-top: 0%;
+            top: 0;
+            valign: top;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<a th:href="@{/myProfile(userId=${userId})}" href="myProfile.html">Вернутьcя к профилю</a>
+<br>
+<h2 id="teamName">Команда</h2>
+<p id="teamCategoriesHead">
+</p>
+
+<script>
+
+    $(document).ready(function () {
+        var teamId = $("meta[name=teamId]").attr("content");
+        var userId = $("meta[name=userId]").attr("content");
+
+        $.get('/team/' + teamId).done(function (team) {
+            $('#teamName').append(`
+                    ${team.name}
+                `)
+        });
+
+        $.get('/category').done(function (categories) {
+            categories.forEach(function (category) {
+                $('#teamCategoriesHead').append(`
+                            <table id="tbl${category.id}" style="display: none;">
+                                <thead><tr id="th${category.id}" style="background-color: #dddddd"><th><b>${category.name}</b></tr></th>
+                                </thead>
+                                <tbody id="tb${category.id}">
+                                </tbody>
+                            </table>
+                   `);
+            });
+
+            $.get('/teamFilteredProductResult/' + teamId).done(function (productResults) {
+                productResults.forEach(function (productResult) {
+                    $('#tbl' + productResult.categoryId).show();
+                    $('#tb' + productResult.categoryId).append(`
+                    <tr>
+                        <td id="td${productResult.categoryId}${productResult.productId}">${productResult.productName}</td>
+                    </tr>
+                `);
+                });
+            });
+        });
+    });
+
+
+</script>
+
+</html>

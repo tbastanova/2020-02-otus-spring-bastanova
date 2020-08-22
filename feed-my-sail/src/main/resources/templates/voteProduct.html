@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="userId" th:content="${userId}"/>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            width: 20%;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        input {
+            width: 10px;
+        }
+    </style>
+</head>
+
+<h2 id="userFullName">Текущий пользователь: </h2>
+<a th:href="@{/myProfile(userId=${userId})}" href="myProfile.html">Вернутьcя к профилю</a>
+<br>
+<br>
+<table>
+    <thead>
+    <tr style="background-color: #dddddd">
+        <th>Название</th>
+        <th>Аллергия/<br>Даже рядом стоять не могу</th>
+        <th>Не мое/<br>Абсолютно не расстроюсь если будет отсутствовать</th>
+        <th>Отношусь нейтрально/<br>Употребляю, но могу обойтись</th>
+        <th>Да, я это ем!/<br>Дайте добавки!</th>
+    </tr>
+    </thead>
+    <tbody id="productsTable">
+    </tbody>
+</table>
+
+<script>
+    function setColor(selector, vote) {
+        var bcgrColor = selector.css("background-color");
+        var txtColor = selector.css("color");
+        switch (vote) {
+            case "0":
+                bcgrColor = "#404040";
+                txtColor = "#ffffff";
+                break;
+            case "1":
+                bcgrColor = "#BC8F8F";
+                txtColor = "#000000";
+                break;
+            case "2":
+                bcgrColor = "#F0E68C";
+                txtColor = "#000000";
+                break;
+            case "3":
+                bcgrColor = "#9ACD32";
+                txtColor = "#000000";
+                break;
+        }
+        selector.css("background", bcgrColor);
+        selector.css("color", txtColor);
+    }
+
+    function check(userId, productId, vote) {
+        $.ajax({
+            url: '/user/' + userId + '/product',
+            type: 'PUT',
+            data: {
+                productId: productId,
+                vote: vote
+            },
+            success: function (result) {
+                setColor($('#productLine' + productId), vote);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        var userId = $("meta[name=userId]").attr("content");
+
+        $.get('/user/' + userId).done(function (user) {
+            $('#userFullName').append(user.fullName)
+        });
+
+        $.get('/product').done(function (products) {
+            products.forEach(function (product) {
+                $('#productsTable').append(`
+                    <tr id="productLine${product.id}">
+                        <td><b>${product.name}</b></td>
+                        <td><input name="productVote${product.id}" type="radio" value="0" onclick="check(${userId},${product.id},this.value)"></td>
+                        <td><input name="productVote${product.id}" type="radio" value="1" onclick="check(${userId},${product.id},this.value)"></td>
+                        <td><input name="productVote${product.id}" type="radio" value="2" onclick="check(${userId},${product.id},this.value)"></td>
+                        <td><input name="productVote${product.id}" type="radio" value="3" onclick="check(${userId},${product.id},this.value)"></td>
+                    </tr>
+                `)
+            });
+            $.get('/user/' + userId + '/product').done(function (userProducts) {
+                userProducts.forEach(function (userProduct) {
+                    $("[name=productVote" + userProduct.product_id + "][value=" + userProduct.vote + "]").attr('checked', true);
+                    setColor($('#productLine' + userProduct.product_id), userProduct.vote.toString());
+                });
+            });
+        });
+    });
+
+
+</script>
+
+</html>
