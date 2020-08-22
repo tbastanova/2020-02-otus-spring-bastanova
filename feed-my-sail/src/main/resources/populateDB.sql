@@ -1,56 +1,84 @@
-create table user(
-    id bigserial,
-    username varchar (255),
-    password varchar (255),
-    last_name varchar (255),
-    first_name varchar (255),
-    middle_name varchar (255),
-    primary key (id)
-    );
+insert into category(id, name)
+values (1, 'Свежее мясо'),
+       (2, 'Обработанное мясо'),
+       (3, 'Консервы'),
+       (4, 'Яйца'),
+       (5, 'Молочка'),
+       (6, 'Крупы и т.п.'),
+       (7, 'Овощи'),
+       (8, 'Фрукты'),
+       (9, 'Приправы'),
+       (10, 'Чай/кофе'),
+       (11, 'Напитки'),
+       (12, 'Снеки');
 
-create table role(
-    id bigserial,
-    name varchar (255),
-    primary key (id)
-    );
+insert into product(id, name, category_id)
+values (1, 'Говядина', 1),
+       (2, 'Свинина', 1),
+       (3, 'Куриное филе', 1),
+       (4, 'Колбаса', 2),
+       (5, 'Ветчина', 2),
+       (6, 'Тунец', 3),
+       (7, 'Оливки', 3),
+       (8, 'Маринованые огурцы', 3),
+       (9, 'Яйца куриные', 4),
+       (10, 'Сыр', 5),
+       (11, 'Йогурт', 5),
+       (12, 'Молоко', 5),
+       (13, 'Сливки', 5),
+       (14, 'Масло сливочное', 5),
+       (15, 'Макароны', 6),
+       (16, 'Рис', 6),
+       (17, 'Помидоры', 7),
+       (18, 'Огурцы', 7),
+       (19, 'Перец болгарский', 7),
+       (20, 'Чеснок', 7),
+       (21, 'Яблоки', 8),
+       (22, 'Бананы', 8),
+       (23, 'Апельсины', 8),
+       (24, 'Виноград', 8),
+       (25, 'Масло оливковое', 9),
+       (26, 'Майонез', 9),
+       (27, 'Чай черный', 10),
+       (28, 'Чай зеленый', 10),
+       (29, 'Кофе молотый', 10),
+       (30, 'Кофе растворимый', 10),
+       (31, 'Кола', 11),
+       (32, 'Швепс', 11),
+       (33, 'Орехи', 12),
+       (34, 'Чипсы', 12),
+       (35, 'Печенье', 12),
+       (36, 'Шоколад', 12);
 
-create table user_role(
-    user_id bigint references user(id) on delete cascade,
-    role_id bigint references role(id) on delete cascade,
-    primary key (user_id,role_id)
-    );
+insert into app_user(id, username, password, last_name, first_name, middle_name)
+values (1, 'vrungel', '123456', 'Врунгель', 'Христофор', 'Бонифатьевич'),
+       (2, 'grei', '123456', 'Грей', 'Артур', null),
+       (3, 'jack', '123456', 'Воробей', 'Джек', null);
 
-create table category(
-    id bigserial,
-    name varchar (255),
-    primary key (id)
-    );
+insert into team(id, name, skipper_id)
+values (1, 'Беда_15.09.2020', 1),
+       (2, 'Алые паруса_22.09.2020', 2),
+       (3, 'Черная жемчужина_29.09.2020', 3);
 
-create table product(
-    id bigserial,
-    name varchar(255),
-    category_id bigint references category(id) on delete cascade,
-    primary key (id)
-    );
+insert into user_team(user_id, team_id)
+values (1, 1),
+       (1, 2),
+       (1, 3),
+       (2, 1),
+       (2, 2),
+       (3, 1),
+       (3, 3);
 
-create table user_product(
-    id bigserial,
-    user_id bigint references user(id) on delete cascade,
-    product_id bigint references product(id) on delete cascade,
-    vote integer,
-    primary key (id),
-    unique key (user_id,product_id)
-    );
-
-create table team(
-    id bigserial,
-    name varchar (255),
-    skipper_id  bigint references user(id) on delete cascade,
-    primary key (id)
-    );
-
-create table user_team(
-    user_id bigint references user(id) on delete cascade,
-    team_id bigint references team(id) on delete cascade,
-    primary key (user_id,team_id)
-    );
+insert into user_product(user_id, product_id, vote)
+values (1, 1, 2),
+       (1, 2, 2),
+       (1, 3, 3),
+       (1, 7, 1),
+       (2, 1, 1),
+       (2, 2, 3),
+       (2, 3, 1),
+       (2, 5, 2),
+       (3, 1, 1),
+       (3, 2, 0),
+       (3, 3, 1),
+       (3, 5, 3);

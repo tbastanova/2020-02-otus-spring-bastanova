@@ -1,6 +1,7 @@
 package ru.otus.feedmysail.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.feedmysail.exception.NoTeamFoundException;
 import ru.otus.feedmysail.exception.NoUserFoundException;
 import ru.otus.feedmysail.model.AppUser;
@@ -23,11 +24,13 @@ public class TeamServiceImpl implements TeamService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public Team findById(long id) {
         return teamRepository.findById(id).orElseThrow(() -> new NoTeamFoundException(new Throwable()));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Team> findByUserId(long userId) {
         AppUser user = userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException(new Throwable()));
         List<Team> teams = teamRepository.findByUsers(user);
