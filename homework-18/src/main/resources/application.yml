@@ -1,0 +1,14 @@
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+      metrics:
+        rollingStats:
+          timeInMilliseconds: 15000
+      circuitBreaker:
+        requestVolumeThreshold: 10
+        errorThresholdPercentage: 50
+        sleepWindowInMilliseconds: 6000
